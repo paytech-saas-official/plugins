@@ -1,0 +1,20 @@
+{
+  "name": "paytech",
+  "interface": {
+    "displayName": "pay.tech plugins"
+  },
+  "plugins": [
+    {
+      "name": "psp-payments",
+      "source": {
+        "source": "local",
+        "path": "./plugins/psp-payments"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

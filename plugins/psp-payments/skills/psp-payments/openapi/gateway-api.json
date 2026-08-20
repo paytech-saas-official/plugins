@@ -1,0 +1,4764 @@
+{
+ "openapi": "3.1.1",
+ "info": {
+  "title": "pay.tech API",
+  "description": "Gateway API\n",
+  "license": {
+   "name": "Apache 2.0",
+   "identifier": "Apache-2.0"
+  },
+  "version": "1.0.341"
+ },
+ "servers": [
+  {
+   "url": "https://engine-sandbox.pay.tech",
+   "description": "Sandbox"
+  },
+  {
+   "url": "https://engine.pay.tech",
+   "description": "Production"
+  }
+ ],
+ "paths": {
+  "/api/v1/payments": {
+   "get": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Get payments",
+    "description": "Get a list of payments sorted by creation date (most recent first)",
+    "operationId": "getPayments",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 1000
+      }
+     },
+     {
+      "name": "created.gte",
+      "in": "query",
+      "description": "If passed, return only payments created at or after the specified time. The default value is set to 24 hours prior to the current time.",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2021-10-13T10:26:18"
+      }
+     },
+     {
+      "name": "created.lt",
+      "in": "query",
+      "description": "If passed, return only payments created strictly before the specified time",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2021-10-13T10:39:34"
+      }
+     },
+     {
+      "name": "updated.gte",
+      "in": "query",
+      "description": "If passed, return only payments updated at or after the specified time",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2021-10-13T10:26:18"
+      }
+     },
+     {
+      "name": "updated.lt",
+      "in": "query",
+      "description": "If passed, return only payments updated strictly before the specified time",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2021-10-13T10:39:34"
+      }
+     },
+     {
+      "name": "referenceId.eq",
+      "in": "query",
+      "description": "If passed, return only payments with the requested referenceId",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "example": "order-12345"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Payment List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Create payment",
+    "description": "Payment request, used for DEPOSITS, WITHDRAWALS and REFUNDS",
+    "operationId": "createPayment",
+    "requestBody": {
+     "description": "Payment Request - Request to initiate a payment",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PaymentRequest"
+       },
+       "examples": {
+        "default_example": {
+         "$ref": "#/components/examples/SimpleDepositRequest"
+        },
+        "basic_card_hpp_deposit_example": {
+         "$ref": "#/components/examples/BasicCardHppDepositRequest"
+        },
+        "basic_card_sts_deposit_example": {
+         "$ref": "#/components/examples/BasicCardStsDepositRequest"
+        },
+        "google_pay_sts_deposit_example": {
+         "$ref": "#/components/examples/GooglePayStsDepositRequest"
+        },
+        "google_pay_decrypted_token_sts_deposit_example": {
+         "$ref": "#/components/examples/GooglePayDecryptedTokenStsDepositRequest"
+        },
+        "google_pay_decrypted_token_pan_only_sts_deposit_example": {
+         "$ref": "#/components/examples/GooglePayDecryptedTokenPanOnlyStsDepositRequest"
+        },
+        "apple_pay_sts_deposit_example": {
+         "$ref": "#/components/examples/ApplePayStsDepositRequest"
+        },
+        "apple_pay_decrypted_data_sts_deposit_example": {
+         "$ref": "#/components/examples/ApplePayDecryptedDataStsDepositRequest"
+        },
+        "banktransfer_ar_deposit_example": {
+         "$ref": "#/components/examples/BankTransferArDepositRequest"
+        },
+        "pix_deposit_example": {
+         "$ref": "#/components/examples/PixDepositRequest"
+        },
+        "banktransfer_cl_deposit_example": {
+         "$ref": "#/components/examples/BankTransferClDepositRequest"
+        },
+        "banktransfer_cr_deposit_example": {
+         "$ref": "#/components/examples/BankTransferCrDepositRequest"
+        },
+        "banktransfer_gt_deposit_example": {
+         "$ref": "#/components/examples/BankTransferGtDepositRequest"
+        },
+        "banktransfer_hn_deposit_example": {
+         "$ref": "#/components/examples/BankTransferHnDepositRequest"
+        },
+        "banktransfer_pa_deposit_example": {
+         "$ref": "#/components/examples/BankTransferPaDepositRequest"
+        },
+        "banktransfer_uy_deposit_example": {
+         "$ref": "#/components/examples/BankTransferUyDepositRequest"
+        },
+        "crypto_btc_deposit_example": {
+         "$ref": "#/components/examples/CryptoBtcDepositRequest"
+        },
+        "crypto_btc_bep20_deposit_example": {
+         "$ref": "#/components/examples/CryptoBtcBep20DepositRequest"
+        },
+        "crypto_usdt_trc20_deposit_example": {
+         "$ref": "#/components/examples/CryptoUsdtTrc20DepositRequest"
+        },
+        "fiat_to_crypto_deposit_example": {
+         "$ref": "#/components/examples/FiatToCryptoDepositRequest"
+        },
+        "efecty_deposit_example": {
+         "$ref": "#/components/examples/EfectyDepositRequest"
+        },
+        "nequi_deposit_example": {
+         "$ref": "#/components/examples/NequiDepositRequest"
+        },
+        "pse_deposit_example": {
+         "$ref": "#/components/examples/PseDepositRequest"
+        },
+        "paytm_deposit_example": {
+         "$ref": "#/components/examples/PaytmDepositRequest"
+        },
+        "phonepe_deposit_example": {
+         "$ref": "#/components/examples/PhonePeDepositRequest"
+        },
+        "upi_collect_deposit_example": {
+         "$ref": "#/components/examples/UpiCollectDepositRequest"
+        },
+        "upi_intent_deposit_example": {
+         "$ref": "#/components/examples/UpiIntentDepositRequest"
+        },
+        "spei_deposit_example": {
+         "$ref": "#/components/examples/SpeiDepositRequest"
+        },
+        "banktransfer_pe_deposit_example": {
+         "$ref": "#/components/examples/BankTransferPeDepositRequest"
+        },
+        "paypo_deposit_example": {
+         "$ref": "#/components/examples/PayPoDepositRequest"
+        },
+        "basic_card_withdrawal_example": {
+         "$ref": "#/components/examples/BasicCardWithdrawalRequest"
+        },
+        "banktransfer_ar_withdrawal_example": {
+         "$ref": "#/components/examples/BankTransferArWithdrawalRequest"
+        },
+        "pix_withdrawal_example": {
+         "$ref": "#/components/examples/PixWithdrawalRequest"
+        },
+        "banktransfer_cl_withdrawal_example": {
+         "$ref": "#/components/examples/BankTransferClWithdrawalRequest"
+        },
+        "banktransfer_co_withdrawal_example": {
+         "$ref": "#/components/examples/BankTransferCoWithdrawalRequest"
+        },
+        "imps_withdrawal_example": {
+         "$ref": "#/components/examples/ImpsWithdrawalRequest"
+        },
+        "banktransfer_mx_withdrawal_example": {
+         "$ref": "#/components/examples/BankTransferMxWithdrawalRequest"
+        },
+        "banktransfer_pe_withdrawal_example": {
+         "$ref": "#/components/examples/BankTransferPeWithdrawalRequest"
+        },
+        "refund_example": {
+         "$ref": "#/components/examples/RefundRequest"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Payment response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        },
+        "examples": {
+         "deposit_example": {
+          "$ref": "#/components/examples/CreateDepositResponse"
+         },
+         "withdrawal_example": {
+          "$ref": "#/components/examples/CreateWithdrawalResponse"
+         },
+         "refund_example": {
+          "$ref": "#/components/examples/CreateRefundResponse"
+         }
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}": {
+   "get": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Find payment",
+    "description": "Find payment by Id",
+    "operationId": "getPayment",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Payment Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Execute deposit",
+    "description": "Execute deposit without customer redirection to gateway checkout page. Consult with support team before using this method.\n",
+    "operationId": "executeDeposit",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Subscription patch request",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DepositPatchRequest"
+       },
+       "examples": {
+        "default_example": {
+         "$ref": "#/components/examples/SimpleDepositPatchRequest"
+        }
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Payment Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}/capture": {
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Capture payment",
+    "description": "Capture a Pre-Authorized payment fully or partially. Only a payment in AUTHORIZED state can be captured.",
+    "operationId": "capturePayment",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Capture Request - Request to capture a Pre-Authorized payment",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CaptureRequest"
+       }
+      }
+     },
+     "required": false
+    },
+    "responses": {
+     "200": {
+      "description": "Payment response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}/void": {
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Void payment",
+    "description": "Void a Pre-Authorized payment. Only a payment in AUTHORIZED state can be voided. The payment will be transferred to CANCELLED state and will no longer be available for capturing.",
+    "operationId": "voidPayment",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Payment response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}/chargebacks": {
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Register chargeback",
+    "description": "Register a chargeback for a completed deposit payment. Only a payment of type DEPOSIT in COMPLETED state without an existing chargeback can be used.",
+    "operationId": "registerChargeback",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Register Chargeback Request",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RegisterChargebackRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Payment response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}/approve": {
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Approve withdrawal",
+    "description": "Approve a withdrawal payment that is awaiting merchant approval. Only a WITHDRAWAL payment in AWAITING_APPROVAL state can be approved.",
+    "operationId": "approvePayment",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Payment response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}/reject": {
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Reject withdrawal",
+    "description": "Reject a withdrawal payment that is awaiting merchant approval. Only a WITHDRAWAL payment in AWAITING_APPROVAL state can be rejected. The payment will be transferred to CANCELLED state.",
+    "operationId": "rejectPayment",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Reject Payment Request",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RejectPaymentRequest"
+       }
+      }
+     },
+     "required": false
+    },
+    "responses": {
+     "200": {
+      "description": "Payment response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/api/v1/payments/{id}/operations": {
+   "get": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Get operations",
+    "description": "Get a list of operations performed during payment processing sorted by time (most recent first)",
+    "operationId": "getOperations",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Payment Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Operation List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OperationListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/api/v1/customers/{customer.referenceId}/card-tokens": {
+   "get": {
+    "tags": [
+     "Customers"
+    ],
+    "summary": "Retrieve customers secure card token",
+    "description": "Retrieve customers secure card token for further processing",
+    "operationId": "getCustomerCardToken",
+    "parameters": [
+     {
+      "name": "customer.referenceId",
+      "in": "path",
+      "description": "Customer Reference Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9_-]{1,128}/",
+       "type": "string"
+      }
+     },
+     {
+      "name": "savedByCustomer.eq",
+      "in": "query",
+      "description": "Filters tokens by saving method: true returns tokens explicitly saved by the customer, false returns automatically saved database tokens, and omitting the parameter returns all tokens.",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "example": true
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Received customers secure card token",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CustomerCardTokenListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/api/v1/customers/{customerReferenceId}/terminals/{terminalId}/tokens": {
+   "get": {
+    "tags": [
+     "Customers"
+    ],
+    "summary": "Retrieve customers tokens",
+    "description": "Retrieve customers tokens for a specific customer within a specific terminal",
+    "operationId": "getCustomerTokens",
+    "parameters": [
+     {
+      "name": "customer.referenceId",
+      "in": "path",
+      "description": "Customer Reference Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9_-]{1,128}/",
+       "type": "string"
+      }
+     },
+     {
+      "name": "terminalId",
+      "in": "path",
+      "description": "Terminal Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[0-9]{1,128}/",
+       "type": "int"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Received customers tokens",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CustomerTerminalTokenListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/api/v1/subscriptions/{id}": {
+   "get": {
+    "tags": [
+     "Subscriptions"
+    ],
+    "summary": "Find subscription",
+    "description": "Find subscription by Id",
+    "operationId": "getSubscription",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Subscription Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Subscription Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SubscriptionResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "Subscriptions"
+    ],
+    "summary": "Patch subscription",
+    "description": "Patch subscription",
+    "operationId": "patchSubscription",
+    "parameters": [
+     {
+      "name": "id",
+      "in": "path",
+      "description": "Subscription Id",
+      "required": true,
+      "schema": {
+       "pattern": "/[a-zA-Z0-9]{32}/",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "description": "Subscription patch request",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SubscriptionPatchRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Subscription Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SubscriptionResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/api/v1/balances": {
+   "get": {
+    "tags": [
+     "Balances"
+    ],
+    "summary": "Get balances",
+    "description": "Get a list of merchant balances in the Financial Module for a specific shop. For more detailed information, please contact our support team.",
+    "operationId": "getBalances",
+    "responses": {
+     "200": {
+      "description": "Balance List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BalanceListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/api/v1/available-withdrawal-balances": {
+   "get": {
+    "tags": [
+     "Balances"
+    ],
+    "summary": "Get balances available for withdrawals via the gateway API",
+    "description": "Get balances available for withdrawals via the gateway API. See the \"Check Withdrawal Balance\" section in the shop settings.",
+    "operationId": "getAvailableWithdrawalBalances",
+    "responses": {
+     "200": {
+      "description": "List of balances for the shop that was authenticated in the request",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AvailableWithdrawalBalancesListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    },
+    "security": [
+     {
+      "BearerAuth": []
+     }
+    ]
+   }
+  }
+ },
+ "webhooks": {
+  "payments": {
+   "post": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Payment processing completed",
+    "description": "Publish details of a new processed payment.",
+    "operationId": "publishPaymentFinalizedEvent",
+    "requestBody": {
+     "description": "Information about a new finalized payment",
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PaymentResult"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Return a 200 status to indicate that the data was received successfully"
+     }
+    },
+    "security": [
+     {
+      "SignatureAuth": []
+     }
+    ]
+   },
+   "servers": [
+    {
+     "url": "https://merchant-website.com",
+     "description": "Webhook URL on merchant side"
+    }
+   ]
+  }
+ },
+ "components": {
+  "schemas": {
+   "AccountType": {
+    "type": "string",
+    "description": "Account Type",
+    "example": "SAVINGS",
+    "enum": [
+     "SAVINGS",
+     "CHECKING"
+    ]
+   },
+   "PaymentType": {
+    "type": "string",
+    "description": "Payment Type",
+    "example": "DEPOSIT",
+    "enum": [
+     "DEPOSIT",
+     "WITHDRAWAL",
+     "REFUND"
+    ]
+   },
+   "PaymentMethod": {
+    "type": "string",
+    "description": "Payment Method",
+    "example": "BASIC_CARD",
+    "enum": [
+     "ABSA_PAY",
+     "ACH",
+     "AHLPAY",
+     "ALFAKIT",
+     "ALFAMART",
+     "ALIPAY",
+     "ALYCEPAY",
+     "APPLEPAY",
+     "ARI10",
+     "ASTROPAY",
+     "B2BINPAY",
+     "BANCOMAT",
+     "BANCONTACT",
+     "BANKTRANSFER",
+     "BANKTRANSFER_AR",
+     "BANKTRANSFER_BO",
+     "BANKTRANSFER_BR",
+     "BANKTRANSFER_CL",
+     "BANKTRANSFER_CO",
+     "BANKTRANSFER_CR",
+     "BANKTRANSFER_EC",
+     "BANKTRANSFER_GT",
+     "BANKTRANSFER_HN",
+     "BANKTRANSFER_MX",
+     "BANKTRANSFER_PA",
+     "BANKTRANSFER_PE",
+     "BANKTRANSFER_TR",
+     "BANKTRANSFER_UY",
+     "BANKTRANSFER_VE",
+     "BASIC_CARD",
+     "BASIC_CARD_HPP",
+     "BCI",
+     "BILLLINE",
+     "BINANCE_PAY",
+     "BIOPAGO",
+     "BIZUM",
+     "BKASH",
+     "BLIK",
+     "BLUVOUCHER",
+     "BOLETO",
+     "BOOST",
+     "BREB",
+     "BRITE",
+     "BYBIT_PAY",
+     "CAPITEC_PAY",
+     "CASH",
+     "CASHAPP",
+     "CASH_EC",
+     "CASHLIB",
+     "CHEK",
+     "CIP",
+     "CLICK",
+     "CODI",
+     "CRYPTO",
+     "CUP",
+     "DANA",
+     "DPOPAY",
+     "DRAGON_PAY",
+     "DUITNOW",
+     "EASYPAISA",
+     "ECNY",
+     "EFECTY",
+     "EFT",
+     "EMANAT",
+     "ENAIRA",
+     "EPAY_BG",
+     "EPS",
+     "ETISALAT_EG",
+     "EZYCASH",
+     "ESEWA",
+     "EUPAGO",
+     "EXTERNAL_HPP",
+     "FAWRY",
+     "FINRAX",
+     "FLEXEPIN",
+     "FONEPAY",
+     "FPS",
+     "FPS_HK",
+     "FPX",
+     "FUPS",
+     "GATE8TRANSACT",
+     "GATEIQ",
+     "GCASH",
+     "GIFTCARD",
+     "GIFTCARD_CARD",
+     "GIFTCARD_OPENBANKING",
+     "GIFTCARD_PAYPAL",
+     "GIFTCARD_PM",
+     "GIROPAY",
+     "GOOGLEPAY",
+     "GOPAY",
+     "GPAY_IN",
+     "GRABPAY",
+     "HAVALE",
+     "HAYDIPAY",
+     "HAYHAY",
+     "HELP2PAY",
+     "HITES",
+     "IDEAL",
+     "IMEPAY",
+     "IMPS",
+     "INAI",
+     "INRPAY",
+     "INTENT",
+     "INTERAC",
+     "INTERAC_ACH",
+     "INTERAC_ETO",
+     "INTERAC_EXPRESS",
+     "INTERAC_REQUEST_MONEY",
+     "INTERAC_RTO",
+     "JAZZCASH",
+     "JETONCASH",
+     "JETONWALLET",
+     "KAKAOPAY",
+     "KBZ",
+     "KESSPAY",
+     "KHALTI",
+     "KHIPU",
+     "KLAP_EFECTIVO",
+     "KLAP_TRANSFERENCIA",
+     "KLARNA",
+     "LOCALPAYMENT",
+     "M10",
+     "MACH",
+     "MACROPAY",
+     "MBWAY",
+     "MEFETE",
+     "MERCADOPAGO",
+     "MIA",
+     "MIFINITY",
+     "MISTERCASH",
+     "MOBILE_BANKING_CN",
+     "MOBILE_COMMERCE",
+     "MOBILE_MONEY",
+     "MOLLIE",
+     "MOMOPAY_RW",
+     "MOMOPAY_VN",
+     "MONERCHY",
+     "MONETIX",
+     "MONEYTOLIA",
+     "MONNET",
+     "MONOOVA_ACCOUNT_TRANSFER",
+     "MONOOVA_WALLET_TRANSFER",
+     "MPAY",
+     "MPESA",
+     "MUCHBETTER",
+     "MULTIBANCO",
+     "MYBANK",
+     "MYPAYZ",
+     "N26",
+     "NAGAD",
+     "NAVERPAY",
+     "NEFT",
+     "NEOSURF",
+     "NEQUI",
+     "NETBANKING",
+     "NETELLER",
+     "NGENIUS",
+     "NODA",
+     "NODA_REVOLUT",
+     "NUMICARD",
+     "NUMICARD_CARD",
+     "NUMICARD_OPENBANKING",
+     "NUMICARD_PAYPAL",
+     "OFFLINE_UPI",
+     "OMNIMATRIX",
+     "ONEVOUCHER",
+     "ONLINE_BANKING",
+     "OPAY",
+     "OPEN_BANKING",
+     "OPENPAYD",
+     "OPTIMONEY",
+     "OTTVOUCHER",
+     "OVO",
+     "OXXO",
+     "P24",
+     "P2C",
+     "P2P_ACCESS",
+     "P2P_ALFABANK",
+     "P2P_CARD",
+     "P2P_CARD_ABH",
+     "P2P_CARD_CLICK",
+     "P2P_CARD_HUMO",
+     "P2P_CARD_PAYME",
+     "P2P_CARD_UZCARD",
+     "P2P_CROSS_BORDER",
+     "P2P_CROSS_BORDER_ALFABANK",
+     "P2P_CROSS_BORDER_GAZPROMBANK",
+     "P2P_CROSS_BORDER_SBER",
+     "P2P_CROSS_BORDER_TBANK",
+     "P2P_CROSS_BORDER_VTB",
+     "P2P_ELCART",
+     "P2P_EMANAT",
+     "P2P_GAZPROMBANK",
+     "P2P_IBAN",
+     "P2P_INSTAPAY_EG",
+     "P2P_INTERAC_ETO",
+     "P2P_KAPITAL",
+     "P2P_M10",
+     "P2P_MBANK_KG",
+     "P2P_MOBILE",
+     "P2P_MOBILE_PAYME",
+     "P2P_MOBILE_TOP_UP",
+     "P2P_OZONBANK",
+     "P2P_PSB",
+     "P2P_QR_CLICK",
+     "P2P_QR_PAY",
+     "P2P_SBERBANK",
+     "P2P_SBP",
+     "P2P_TBANK",
+     "P2P_UPI",
+     "P2P_VTB",
+     "PAGO_MOVIL",
+     "PAGO_MOVIL_INST",
+     "PAGO46",
+     "PAGOEFECTIVO",
+     "PAGOFACIL",
+     "PAGSMILE_VAULT",
+     "PALMPAY",
+     "PAPARA",
+     "PAPEL",
+     "PARAM",
+     "PARATIM",
+     "PARAZULA",
+     "PAROLAPARA",
+     "PAY2PLAY",
+     "PAYBOL",
+     "PAY_BY_LINK",
+     "PAY_ME",
+     "PAYCASH",
+     "PAYCELL",
+     "PAYCO_KR",
+     "PAYCO_TR",
+     "PAYDO_WALLET",
+     "PAYFIX",
+     "PAYFUN",
+     "PAYID",
+     "PAYMAXIS",
+     "PAYMAYA",
+     "PAYME_UZ",
+     "PAYNOW",
+     "PAYOUT_NONSEPA_REQUEST",
+     "PAYOUT_SEPA_BATCH",
+     "PAYPAL",
+     "PAYPAY",
+     "PAYPO",
+     "PAYPORT",
+     "PAYRETAILERS",
+     "PAYSAFECARD",
+     "PAYSAFECASH",
+     "PAYSHOP",
+     "PAYTM",
+     "PAYTO",
+     "PAYU",
+     "PEC",
+     "PEP",
+     "PERFECTMONEY",
+     "PG_PARA",
+     "PHONEPE",
+     "PIASTRIX",
+     "PICPAY",
+     "PIX",
+     "POLI",
+     "POPY",
+     "POPY_PARA",
+     "PREPAID_CARD",
+     "PROMPTPAY",
+     "PSE",
+     "PUNTOPAGO",
+     "PUSH",
+     "QR",
+     "QR_ELCART",
+     "QR_INSTAPAY_EG",
+     "QR_MBANK_KG",
+     "QRIS",
+     "RAPIDTRANSFER",
+     "RAPIPAGO",
+     "REVOLUT",
+     "ROCKET",
+     "RTP",
+     "RTGS",
+     "RUBPAY",
+     "SATISPAY",
+     "SBERPAY",
+     "SBP",
+     "SBP_CROSS_BORDER",
+     "SEPA",
+     "SERVIFACIL",
+     "SHOPEEPAY",
+     "SIPAY",
+     "SKRILL",
+     "SOFORT",
+     "SOFT2PAY",
+     "SPEI",
+     "SPOYNT",
+     "STICPAY",
+     "SUPERMARKET_CODE_PAY",
+     "SWISH",
+     "TED",
+     "TINK",
+     "TOSLA",
+     "TOSSPAY",
+     "TOUCH_N_GO",
+     "TRANSFIYA",
+     "TRUEMONEY",
+     "TRUSTLY",
+     "TRUSTPAYMENTS",
+     "TWINT",
+     "UNIONPAY_TRANSFER",
+     "UPI",
+     "USSD",
+     "VENMO",
+     "VIETTEL",
+     "VIRTUAL_ACCOUNT",
+     "VNPAY_QR",
+     "VODAFONE_EG",
+     "VOLT",
+     "VOUCHERCARD",
+     "VOUCHERCARD_CARD",
+     "VOUCHERCARD_OPENBANKING",
+     "VOUCHERCARD_PAYPAL",
+     "VOUCHERCARD_PM",
+     "VOUCHERRY",
+     "VOUCHSTAR",
+     "WAVE",
+     "WECHAT",
+     "WEBPAY",
+     "WISE",
+     "XANPAY",
+     "XINPAY",
+     "YAPE",
+     "YAPILY",
+     "ZALO",
+     "ZELLE",
+     "ZIMPLER",
+     "ZIPAY",
+     "ZOTAPAY"
+    ]
+   },
+   "PaymentState": {
+    "type": "string",
+    "description": "Payment State",
+    "example": "PENDING",
+    "enum": [
+     "CHECKOUT",
+     "PENDING",
+     "AUTHORIZED",
+     "CANCELLED",
+     "DECLINED",
+     "COMPLETED",
+     "AWAITING_APPROVAL"
+    ]
+   },
+   "Operation": {
+    "type": "string",
+    "description": "Operation performed during payment processing",
+    "example": "CREATE_PAYMENT",
+    "enum": [
+     "CREATE_PAYMENT",
+     "CHECKOUT",
+     "CANCEL",
+     "CONFIRMATION",
+     "CASCADING",
+     "REDIRECT",
+     "CONTINUE",
+     "CONTINUE_PRE_PROCESSING",
+     "DETECT_FRAUD",
+     "PRE_PROCESSING",
+     "DEPOSIT",
+     "WITHDRAWAL",
+     "REFUND",
+     "CHARGEBACK",
+     "CHECK_STATE",
+     "TRIGGER_WEBHOOK",
+     "HANDLE_WEBHOOK",
+     "CAPTURE",
+     "VOID",
+     "APPROVE",
+     "REJECT",
+     "UPLOAD_FILE",
+     "MANUAL_UPDATE",
+     "MANUAL_CHECK_STATE"
+    ]
+   },
+   "DocumentType": {
+    "type": "string",
+    "description": "Document Type",
+    "example": "BR_CPF",
+    "enum": [
+     "AR_CDI",
+     "AR_PP",
+     "AR_CUIL",
+     "AR_CUIT",
+     "AR_DNI",
+     "AR_OTRO",
+     "BO_CEX",
+     "BO_CI",
+     "BO_NIT",
+     "BO_OD",
+     "BO_PP",
+     "BR_CNPJ",
+     "BR_CPF",
+     "BR_PP",
+     "CL_CE",
+     "CL_CI",
+     "CL_ID",
+     "CL_OTRO",
+     "CL_PP",
+     "CL_RUN",
+     "CL_RUT",
+     "CL_TIN",
+     "CO_CC",
+     "CO_CE",
+     "CO_DL",
+     "CO_DNI",
+     "CO_NE",
+     "CO_NIT",
+     "CO_PP",
+     "CO_SS",
+     "CO_TI",
+     "CO_TIN",
+     "CR_CDI",
+     "EC_CC",
+     "EC_DNI",
+     "EC_PP",
+     "EC_RUC",
+     "GT_CUI",
+     "GT_DPI",
+     "GT_NIT",
+     "IN_DL",
+     "IN_ID",
+     "KZ_IIN",
+     "IN_UID",
+     "MX_CRI",
+     "MX_CURP",
+     "MX_IFE",
+     "MX_PP",
+     "MX_RFC",
+     "MX_TIN",
+     "PA_CIP",
+     "PE_CE",
+     "PE_CPP",
+     "PE_DNI",
+     "PE_FRC",
+     "PE_ID",
+     "PE_OTRO",
+     "PE_PP",
+     "PE_RUC",
+     "PE_TIN",
+     "RU_PP",
+     "TR_CKK",
+     "UK_PP",
+     "UK_NIC",
+     "UK_DL",
+     "UK_BTI",
+     "UK_TIN",
+     "UY_CI",
+     "UY_RUT",
+     "VN_TIN"
+    ]
+   },
+   "Balance": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Balance Id field is defined as a non-persistent index identifier. It is not guaranteed to remain stable over time. Therefore, the id must not be used as a business key or for analytical, reconciliation or historical tracking purposes.",
+      "example": 123
+     },
+     "accountType": {
+      "type": "string",
+      "description": "Account type",
+      "example": "PROCESSING",
+      "enum": [
+       "PROCESSING",
+       "AVAILABLE",
+       "WITHDRAWAL"
+      ]
+     },
+     "name": {
+      "type": "string",
+      "description": "Account name",
+      "example": "Processing Balance(EUR) of shop \"my-shop\" terminal \"payvision [payin]\""
+     },
+     "currency": {
+      "type": "string",
+      "description": "Currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "amount": {
+      "type": "number",
+      "description": "Current account balance amount",
+      "example": 1020.12
+     }
+    }
+   },
+   "CurrencyAmount": {
+    "required": [
+     "currency",
+     "amount"
+    ],
+    "description": "Currency and amount",
+    "type": "object",
+    "properties": {
+     "currency": {
+      "type": "string",
+      "description": "Currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "amount": {
+      "multipleOf": 1e-18,
+      "maximum": 1000000000,
+      "minimum": 1e-05,
+      "type": "number",
+      "description": "Amount in the specified currency",
+      "example": 11.12
+     }
+    }
+   },
+   "PaymentMethodDetails": {
+    "type": "object",
+    "properties": {
+     "customerAccountNumber": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "Customer account Id in external system or masked card PAN",
+      "example": "400000***0002"
+     },
+     "cardToken": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Card token which can be used instead of full card number (for BASIC_CARD payment method only)",
+      "example": "3529d42227424875af8722cbf54d7073"
+     },
+     "cardholderName": {
+      "maxLength": 128,
+      "type": "string",
+      "description": "Cardholder name (for BASIC_CARD payment method only)",
+      "example": "John Doe"
+     },
+     "cardExpiryMonth": {
+      "minLength": 2,
+      "maxLength": 2,
+      "type": "string",
+      "description": "Card expiration month (for BASIC_CARD payment method only)",
+      "example": "01"
+     },
+     "cardExpiryYear": {
+      "minLength": 4,
+      "maxLength": 4,
+      "type": "string",
+      "description": "Card expiration year (for BASIC_CARD payment method only)",
+      "example": "2030"
+     },
+     "cardBrand": {
+      "$ref": "#/components/schemas/CardBrand"
+     },
+     "cardIssuingCountryCode": {
+      "minLength": 2,
+      "maxLength": 2,
+      "type": "string",
+      "description": "Card issuing country code (for BASIC_CARD payment method only)",
+      "example": "CY"
+     },
+     "cardIssuingOrganization": {
+      "maxLength": 128,
+      "type": "string",
+      "description": "Card issuing organization (for BASIC_CARD payment method only)",
+      "example": "HELLENIC BANK, LTD."
+     }
+    }
+   },
+   "GooglePay": {
+    "type": "object",
+    "properties": {
+     "apiVersion": {
+      "type": "integer",
+      "description": "Major version of the API",
+      "example": 2
+     },
+     "apiVersionMinor": {
+      "type": "integer",
+      "description": "Minor version of the API",
+      "example": 0
+     },
+     "paymentMethodData": {
+      "$ref": "#/components/schemas/GooglePayPaymentMethodData"
+     }
+    }
+   },
+   "GooglePayPaymentMethodData": {
+    "type": "object",
+    "properties": {
+     "description": {
+      "type": "string",
+      "description": "Description of the payment method data",
+      "example": "Test Card: Visa••••1111"
+     },
+     "type": {
+      "type": "string",
+      "description": "Payment method",
+      "example": "CARD"
+     },
+     "info": {
+      "$ref": "#/components/schemas/GooglePayPaymentMethodDataInfo"
+     },
+     "tokenizationData": {
+      "$ref": "#/components/schemas/GooglePayPaymentMethodDataTokenizationData"
+     }
+    }
+   },
+   "GooglePayPaymentMethodDataInfo": {
+    "type": "object",
+    "properties": {
+     "cardDetails": {
+      "type": "string",
+      "description": "Card number",
+      "example": "1111"
+     },
+     "cardNetwork": {
+      "type": "string",
+      "description": "Card network",
+      "example": "VISA"
+     },
+     "billingAddress": {
+      "$ref": "#/components/schemas/GooglePayPaymentMethodDataBillingAddress"
+     }
+    }
+   },
+   "GooglePayPaymentMethodDataBillingAddress": {
+    "type": "object",
+    "properties": {
+     "address1": {
+      "type": "string",
+      "description": "Address line 1"
+     },
+     "address2": {
+      "type": "string",
+      "description": "Address line 2"
+     },
+     "address3": {
+      "type": "string",
+      "description": "Address line 3"
+     },
+     "administrativeArea": {
+      "type": "string",
+      "description": "Administrative area"
+     },
+     "countryCode": {
+      "type": "string",
+      "description": "Country code"
+     },
+     "locality": {
+      "type": "string",
+      "description": "Locality"
+     },
+     "name": {
+      "type": "string",
+      "description": "Name"
+     },
+     "postalCode": {
+      "type": "string",
+      "description": "Postal code"
+     },
+     "sortingCode": {
+      "type": "string",
+      "description": "Sorting code"
+     }
+    }
+   },
+   "GooglePayPaymentMethodDataTokenizationData": {
+    "type": "object",
+    "properties": {
+     "token": {
+      "type": "string"
+     },
+     "decryptedToken": {
+      "$ref": "#/components/schemas/GooglePayDecryptedToken"
+     },
+     "type": {
+      "type": "string",
+      "example": "PAYMENT_GATEWAY, CARD"
+     }
+    }
+   },
+   "GooglePayDecryptedToken": {
+    "type": "object",
+    "properties": {
+     "gatewayMerchantId": {
+      "type": "string"
+     },
+     "messageExpiration": {
+      "type": "string"
+     },
+     "messageId": {
+      "type": "string"
+     },
+     "paymentMethod": {
+      "type": "string",
+      "example": "CARD"
+     },
+     "paymentMethodDetails": {
+      "type": "object",
+      "properties": {
+       "pan": {
+        "type": "string"
+       },
+       "expirationMonth": {
+        "type": "integer"
+       },
+       "expirationYear": {
+        "type": "integer"
+       },
+       "authMethod": {
+        "type": "string",
+        "example": "CRYPTOGRAM_3DS",
+        "enum": [
+         "PAN_ONLY",
+         "CRYPTOGRAM_3DS"
+        ]
+       },
+       "cryptogram": {
+        "type": "string"
+       },
+       "eciIndicator": {
+        "type": "string"
+       },
+       "acsTransactionId": {
+        "type": "string"
+       },
+       "assuranceDetails": {
+        "type": "object",
+        "properties": {
+         "accountVerified": {
+          "type": "boolean"
+         },
+         "cardHolderAuthenticated": {
+          "type": "boolean"
+         }
+        }
+       }
+      }
+     }
+    }
+   },
+   "ApplePay": {
+    "type": "object",
+    "properties": {
+     "transactionIdentifier": {
+      "type": "string",
+      "description": "Transaction identifier"
+     },
+     "paymentData": {
+      "$ref": "#/components/schemas/ApplePayPaymentData"
+     },
+     "paymentMethod": {
+      "$ref": "#/components/schemas/ApplePayPaymentMethod"
+     },
+     "billingContact": {
+      "$ref": "#/components/schemas/ApplePayBillingContact"
+     },
+     "shippingContact": {
+      "$ref": "#/components/schemas/ApplePayShippingContact"
+     }
+    }
+   },
+   "ApplePayPaymentData": {
+    "type": "object",
+    "properties": {
+     "version": {
+      "type": "string"
+     },
+     "data": {
+      "type": "string",
+      "description": "Used to pass encrypted Apple Pay payment data to the gateway"
+     },
+     "decryptedData": {
+      "description": "Used to pass decrypted Apple Pay payment data to the gateway",
+      "$ref": "#/components/schemas/ApplePayPaymentDataDecryptedData"
+     },
+     "signature": {
+      "type": "string"
+     },
+     "header": {
+      "$ref": "#/components/schemas/ApplePayPaymentDataHeader"
+     }
+    }
+   },
+   "ApplePayPaymentDataDecryptedData": {
+    "type": "object",
+    "properties": {
+     "applicationPrimaryAccountNumber": {
+      "type": "string"
+     },
+     "applicationExpirationDate": {
+      "type": "string"
+     },
+     "currencyCode": {
+      "type": "string"
+     },
+     "cardholderName": {
+      "type": "string"
+     },
+     "transactionAmount": {
+      "type": "integer"
+     },
+     "deviceManufacturerIdentifier": {
+      "type": "string"
+     },
+     "paymentDataType": {
+      "type": "string"
+     },
+     "paymentData": {
+      "$ref": "#/components/schemas/ApplePayPaymentDataDecryptedDataPaymentData"
+     }
+    }
+   },
+   "ApplePayPaymentDataDecryptedDataPaymentData": {
+    "type": "object",
+    "properties": {
+     "onlinePaymentCryptogram": {
+      "type": "string"
+     },
+     "eciIndicator": {
+      "type": "string"
+     },
+     "emvData": {
+      "type": "string"
+     },
+     "encryptedPINData": {
+      "type": "string"
+     }
+    }
+   },
+   "ApplePayPaymentDataHeader": {
+    "type": "object",
+    "properties": {
+     "applicationData": {
+      "type": "string"
+     },
+     "ephemeralPublicKey": {
+      "type": "string"
+     },
+     "publicKeyHash": {
+      "type": "string"
+     },
+     "transactionId": {
+      "type": "string"
+     }
+    }
+   },
+   "ApplePayPaymentMethod": {
+    "type": "object",
+    "properties": {
+     "displayName": {
+      "type": "string"
+     },
+     "network": {
+      "type": "string"
+     },
+     "type": {
+      "type": "string"
+     }
+    }
+   },
+   "ApplePayBillingContact": {
+    "type": "object",
+    "properties": {
+     "countryCode": {
+      "type": "string",
+      "description": "Country code"
+     },
+     "administrativeArea": {
+      "type": "string",
+      "description": "Administrative area"
+     },
+     "subAdministrativeArea": {
+      "type": "string",
+      "description": "Subadministrative area"
+     },
+     "locality": {
+      "type": "string",
+      "description": "Locality"
+     },
+     "subLocality": {
+      "type": "string",
+      "description": "Sublocality"
+     },
+     "addressLines": {
+      "type": "array",
+      "description": "List of address lines",
+      "items": {
+       "type": "string",
+       "minimum": 1
+      }
+     },
+     "postalCode": {
+      "type": "string",
+      "description": "Postal code"
+     },
+     "givenName": {
+      "type": "string",
+      "description": "Given name"
+     },
+     "familyName": {
+      "type": "string",
+      "description": "Family name"
+     }
+    }
+   },
+   "ApplePayShippingContact": {
+    "type": "object",
+    "properties": {
+     "phoneNumber": {
+      "type": "string",
+      "description": "Phone number"
+     },
+     "emailAddress": {
+      "type": "string",
+      "description": "Email address"
+     }
+    }
+   },
+   "BillingAddress": {
+    "type": "object",
+    "properties": {
+     "addressLine1": {
+      "maxLength": 300,
+      "type": "string",
+      "description": "Line 1 of the address (e.g., Number, street, etc)",
+      "example": "7, Sunny street"
+     },
+     "addressLine2": {
+      "maxLength": 300,
+      "type": "string",
+      "description": "Line 2 of the address (e.g., Suite, apt)",
+      "example": "Office 3"
+     },
+     "city": {
+      "maxLength": 50,
+      "type": "string",
+      "description": "City name",
+      "example": "Limassol"
+     },
+     "countryCode": {
+      "maxLength": 2,
+      "minLength": 2,
+      "pattern": "[A-Z]{2}",
+      "type": "string",
+      "description": "2-character IS0-3166-1 country code",
+      "example": "CY"
+     },
+     "postalCode": {
+      "maxLength": 12,
+      "type": "string",
+      "description": "Postal code",
+      "example": "4141"
+     },
+     "state": {
+      "maxLength": 40,
+      "type": "string",
+      "description": "State code",
+      "example": "CA"
+     }
+    },
+    "description": "Customer's billing address"
+   },
+   "Card": {
+    "type": "object",
+    "properties": {
+     "cardNumber": {
+      "maxLength": 23,
+      "type": "string",
+      "description": "Card primary account number (PAN). All non-numeric characters will be ignored.",
+      "example": "4000 0000 0000 0002"
+     },
+     "cardToken": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Card token which can be used instead of full card number.",
+      "example": "3529d42227424875af8722cbf54d7073"
+     },
+     "cardholderName": {
+      "maxLength": 128,
+      "type": "string",
+      "description": "Cardholder's name printed on the card",
+      "example": "John Smith"
+     },
+     "cardSecurityCode": {
+      "minLength": 3,
+      "maxLength": 4,
+      "type": "string",
+      "description": "Card security code (CVV2 / CVC2 / CAV2)",
+      "example": "010"
+     },
+     "expiryMonth": {
+      "minLength": 2,
+      "maxLength": 2,
+      "type": "string",
+      "description": "Card expiration month, 2 digits",
+      "example": "01"
+     },
+     "expiryYear": {
+      "minLength": 4,
+      "maxLength": 4,
+      "type": "string",
+      "description": "Card expiration year, 4 digits",
+      "example": "2030"
+     }
+    },
+    "description": "You must be PCI DSS compliant to collect card data on your side. If you are not certified, do not add this field to your request and we will collect the data on our page."
+   },
+   "Customer": {
+    "type": "object",
+    "properties": {
+     "referenceId": {
+      "maxLength": 128,
+      "type": "string",
+      "description": "Id of the customer assigned by Merchant",
+      "example": "customer_123"
+     },
+     "citizenshipCountryCode": {
+      "maxLength": 2,
+      "minLength": 2,
+      "type": "string",
+      "description": "Customer country of citizenship",
+      "example": "AU"
+     },
+     "firstName": {
+      "maxLength": 128,
+      "type": "string",
+      "example": "John"
+     },
+     "lastName": {
+      "maxLength": 128,
+      "type": "string",
+      "example": "Smith"
+     },
+     "dateOfBirth": {
+      "maxLength": 10,
+      "minLength": 10,
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "example": "2001-12-03"
+     },
+     "email": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "Email address of the customer",
+      "format": "email",
+      "example": "my@email.com"
+     },
+     "phone": {
+      "maxLength": 18,
+      "type": "string",
+      "description": "International phone number of the customer, without the '+'. Use a space as a separator between the dialing country code and local phone number.",
+      "example": "357 123123123"
+     },
+     "locale": {
+      "maxLength": 2,
+      "minLength": 2,
+      "type": "string",
+      "description": "Customer preferred display language",
+      "example": "ru"
+     },
+     "accountNumber": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "Customer account number in the provider's system. Used for some types of withdrawals."
+     },
+     "accountName": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer account name in the provider's system. Used for some types of withdrawals."
+     },
+     "accountType": {
+      "$ref": "#/components/schemas/AccountType"
+     },
+     "bank": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank name."
+     },
+     "bankCode": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank code."
+     },
+     "bankBranch": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank branch name."
+     },
+     "bankBranchCode": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank branch code."
+     },
+     "documentType": {
+      "$ref": "#/components/schemas/DocumentType"
+     },
+     "documentNumber": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "An identifier for the customer assigned by a government authority"
+     },
+     "routingGroup": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Identify the customer as belonging to a specific group that is used for routing",
+      "example": "VIP"
+     },
+     "kycStatus": {
+      "type": "boolean",
+      "description": "Indicates whether the customer has passed KYC verification",
+      "example": true
+     },
+     "paymentInstrumentKycStatus": {
+      "type": "boolean",
+      "description": "Indicates whether the payment instrument (usually the card number) has passed KYC verification",
+      "example": true
+     },
+     "dateOfFirstDeposit": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "description": "Date of the first deposit from the customer",
+      "example": "2021-01-01"
+     },
+     "depositsAmount": {
+      "type": "integer",
+      "description": "How much the customer has deposited, in base currency",
+      "example": 5000
+     },
+     "withdrawalsAmount": {
+      "type": "integer",
+      "description": "How much the customer has withdrawn, in base currency",
+      "example": 1000
+     },
+     "depositsCnt": {
+      "type": "integer",
+      "description": "How many times the customer made a deposit",
+      "example": 5000
+     },
+     "withdrawalsCnt": {
+      "type": "integer",
+      "description": "How many times the customer made a withdrawal",
+      "example": 1000
+     },
+     "ip": {
+      "type": "string",
+      "description": "The IP address of the customer",
+      "example": "152.13.130.125"
+     }
+    }
+   },
+   "ResponseCustomer": {
+    "type": "object",
+    "properties": {
+     "referenceId": {
+      "maxLength": 128,
+      "type": "string",
+      "description": "Id of the customer assigned by Merchant",
+      "example": "customer_123"
+     },
+     "citizenshipCountryCode": {
+      "maxLength": 2,
+      "minLength": 2,
+      "type": "string",
+      "description": "Customer country of citizenship",
+      "example": "AU"
+     },
+     "firstName": {
+      "maxLength": 128,
+      "type": "string",
+      "example": "John"
+     },
+     "lastName": {
+      "maxLength": 128,
+      "type": "string",
+      "example": "Smith"
+     },
+     "dateOfBirth": {
+      "maxLength": 10,
+      "minLength": 10,
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "example": "2001-12-03"
+     },
+     "email": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "Email address of the customer",
+      "format": "email",
+      "example": "my@email.com"
+     },
+     "phone": {
+      "maxLength": 18,
+      "type": "string",
+      "description": "International phone number of the customer, without the '+'. Use a space as a separator between the dialing country code and local phone number.",
+      "example": "357 123123123"
+     },
+     "locale": {
+      "maxLength": 2,
+      "minLength": 2,
+      "type": "string",
+      "description": "Customer preferred display language",
+      "example": "ru"
+     },
+     "accountName": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer account name in the provider's system. Used for some types of withdrawals."
+     },
+     "accountType": {
+      "$ref": "#/components/schemas/AccountType"
+     },
+     "bank": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank name."
+     },
+     "bankCode": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank code."
+     },
+     "bankBranch": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank branch name."
+     },
+     "bankBranchCode": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank branch code."
+     },
+     "documentType": {
+      "$ref": "#/components/schemas/DocumentType"
+     },
+     "documentNumber": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "An identifier for the customer assigned by a government authority"
+     },
+     "routingGroup": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Identify the customer as belonging to a specific group that is used for routing",
+      "example": "VIP"
+     },
+     "kycStatus": {
+      "type": "boolean",
+      "description": "Indicates whether the customer has passed KYC verification",
+      "example": true
+     },
+     "paymentInstrumentKycStatus": {
+      "type": "boolean",
+      "description": "Indicates whether the payment instrument (usually the card number) has passed KYC verification",
+      "example": true
+     },
+     "dateOfFirstDeposit": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "description": "Date of the first deposit from the customer",
+      "example": "2021-01-01"
+     },
+     "ip": {
+      "type": "string",
+      "description": "The IP address of the customer",
+      "example": "152.13.130.125"
+     }
+    }
+   },
+   "SubscriptionCycle": {
+    "type": "object",
+    "properties": {
+     "sequence": {
+      "type": "integer",
+      "description": "Sequence number of the cycle"
+     },
+     "type": {
+      "type": "string",
+      "description": "Cycle type",
+      "example": "REGULAR",
+      "enum": [
+       "REGULAR",
+       "RETRY"
+      ]
+     },
+     "startTime": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when this cycle was supposed to be created according to the schedule",
+      "example": "2030-12-25T10:11:12"
+     },
+     "paymentId": {
+      "type": "string",
+      "description": "Payment Id"
+     },
+     "paymentState": {
+      "$ref": "#/components/schemas/PaymentState"
+     },
+     "amount": {
+      "type": "number",
+      "description": "Payment amount"
+     }
+    }
+   },
+   "SubscriptionRetryStrategy": {
+    "required": [
+     "frequency",
+     "numberOfCycles"
+    ],
+    "type": "object",
+    "properties": {
+     "frequency": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The number of intervals after which the system will retry the payment after an unsuccessful attempt",
+      "example": 2
+     },
+     "frequencyUnit": {
+      "type": "string",
+      "description": "The interval at which the subscription is retried. Use 'MINUTE' for testing purposes only.",
+      "example": "DAY",
+      "enum": [
+       "MINUTE",
+       "DAY",
+       "WEEK",
+       "MONTH"
+      ]
+     },
+     "numberOfCycles": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Required number of retries",
+      "example": 12
+     },
+     "amountAdjustments": {
+      "type": "array",
+      "description": "If specified, the nth element contains the percentage of the initial amount that will be charged for the nth retry",
+      "items": {
+       "type": "integer",
+       "minimum": 1
+      }
+     }
+    },
+    "description": "Retry strategy for subscription. If not specified, the subscription is canceled after the first failed payment attempt."
+   },
+   "Subscription": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Subscription Id"
+     },
+     "customerReferenceId": {
+      "maxLength": 128,
+      "type": "string",
+      "description": "Id of the customer from initial payment"
+     },
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description for subsequent recurring payments",
+      "example": "Subscription to service"
+     },
+     "amount": {
+      "type": "number",
+      "description": "The amount to be used for subsequent payments"
+     },
+     "currency": {
+      "type": "string",
+      "description": "Payment currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol"
+     },
+     "createTime": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time the subscription was created",
+      "example": "2030-12-25T10:11:12"
+     },
+     "startTime": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time of the 1st cycle",
+      "example": "2030-12-25T10:11:12"
+     },
+     "frequency": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The number of intervals after which a subscriber is billed. For example, if the frequencyUnit is DAY with an frequency of 2, the subscription is billed once every two days.",
+      "example": 2
+     },
+     "frequencyUnit": {
+      "type": "string",
+      "description": "The interval at which the subscription is billed. Use 'MINUTE' for testing purposes only.",
+      "example": "DAY",
+      "enum": [
+       "MINUTE",
+       "DAY",
+       "WEEK",
+       "MONTH"
+      ]
+     },
+     "requestedNumberOfCycles": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Required number of subsequent recurring payments. Unlimited if value is not specified.",
+      "example": 12
+     },
+     "state": {
+      "type": "string",
+      "description": "Subscription state",
+      "example": "ACTIVE",
+      "enum": [
+       "ACTIVE",
+       "CANCELLED",
+       "COMPLETED"
+      ]
+     },
+     "recurringToken": {
+      "type": "string",
+      "description": "Token that is used to continue the recurring chain"
+     },
+     "retryStrategy": {
+      "$ref": "#/components/schemas/SubscriptionRetryStrategy"
+     },
+     "cycles": {
+      "type": "array",
+      "description": "List of payments automatically generated for this subscription",
+      "items": {
+       "$ref": "#/components/schemas/SubscriptionCycle"
+      }
+     }
+    }
+   },
+   "Payment": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Payment Id",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "referenceId": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "referenceId from payment request",
+      "example": "payment-123"
+     },
+     "created": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when this payment was created, in UTC time zone",
+      "example": "2030-12-25T10:11:12"
+     },
+     "paymentType": {
+      "$ref": "#/components/schemas/PaymentType"
+     },
+     "state": {
+      "$ref": "#/components/schemas/PaymentState"
+     },
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description of the transaction",
+      "example": "Deposit via TEST shop"
+     },
+     "parentPaymentId": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Initial transaction Id from payment request",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "paymentMethod": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "paymentMethodDetails": {
+      "$ref": "#/components/schemas/PaymentMethodDetails"
+     },
+     "amount": {
+      "multipleOf": 1e-18,
+      "maximum": 1000000000,
+      "minimum": 1e-05,
+      "type": "number",
+      "description": "Amount sent to the payment provider",
+      "example": 11.12
+     },
+     "currency": {
+      "type": "string",
+      "description": "Currency sent to the payment provider",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "customerAmount": {
+      "type": "number",
+      "description": "Amount from payment request. Filled only if the request currency differs from the currency sent to the payment provider.",
+      "example": 15
+     },
+     "customerCurrency": {
+      "type": "string",
+      "description": "Currency from payment request. Filled only if it differs from the currency sent to the payment provider.",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     },
+     "redirectUrl": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "URL to redirect the customer",
+      "example": "http://start/payment/6ccaa03cb2c242a68ce332f38fedfad7"
+     },
+     "errorCode": {
+      "type": "string",
+      "description": "Check 'Error Codes' section for details",
+      "example": "4.01"
+     },
+     "errorMessage": {
+      "type": "string",
+      "description": "Check 'Error Codes' section for details",
+      "example": "Insufficient Funds"
+     },
+     "externalResultCode": {
+      "type": "string",
+      "description": "Result code from external provider",
+      "example": "03"
+     },
+     "customer": {
+      "$ref": "#/components/schemas/Customer"
+     },
+     "billingAddress": {
+      "$ref": "#/components/schemas/BillingAddress"
+     },
+     "startRecurring": {
+      "type": "boolean",
+      "description": "Indicates whether this payment has started a recurring chain"
+     },
+     "preAuth": {
+      "type": "boolean",
+      "description": "Indicates whether this is a Pre-Authorization request (for 2-phase deposit)"
+     },
+     "recurringToken": {
+      "type": "string",
+      "description": "Token that can be used to continue the recurring chain"
+     },
+     "shopName": {
+      "type": "string",
+      "description": "The name of the shop this payment belongs to"
+     },
+     "terminalName": {
+      "type": "string",
+      "description": "The name of the provider that was used to process this payment"
+     },
+     "externalFeeAmount": {
+      "type": "number",
+      "description": "Provider fee. Filled only if supported by the provider.",
+      "example": 15
+     },
+     "externalFeeCurrency": {
+      "type": "string",
+      "description": "Provider fee currency. Filled only if supported by the provider.",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     }
+    }
+   },
+   "PaymentResult": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Payment Id",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "referenceId": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "referenceId from payment request",
+      "example": "payment-123"
+     },
+     "created": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when this payment was created, in UTC time zone",
+      "example": "2030-12-25T10:11:12"
+     },
+     "paymentType": {
+      "$ref": "#/components/schemas/PaymentType"
+     },
+     "state": {
+      "$ref": "#/components/schemas/PaymentState"
+     },
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description of the transaction",
+      "example": "Deposit via TEST shop"
+     },
+     "parentPaymentId": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Initial transaction Id from payment request",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "paymentMethod": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "paymentMethodDetails": {
+      "$ref": "#/components/schemas/PaymentMethodDetails"
+     },
+     "amount": {
+      "multipleOf": 1e-18,
+      "maximum": 1000000000,
+      "minimum": 1e-05,
+      "type": "number",
+      "description": "Amount sent to the payment provider",
+      "example": 11.12
+     },
+     "currency": {
+      "type": "string",
+      "description": "Currency sent to the payment provider",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "customerAmount": {
+      "type": "number",
+      "description": "Amount from payment request. Filled only if the request currency differs from the currency sent to the payment provider.",
+      "example": 15
+     },
+     "customerCurrency": {
+      "type": "string",
+      "description": "Currency from payment request. Filled only if it differs from the currency sent to the payment provider.",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     },
+     "redirectUrl": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "URL to redirect the customer",
+      "example": "http://start/payment/6ccaa03cb2c242a68ce332f38fedfad7"
+     },
+     "errorCode": {
+      "type": "string",
+      "description": "Check 'Error Codes' section for details",
+      "example": "4.01"
+     },
+     "errorMessage": {
+      "type": "string",
+      "description": "Check 'Error Codes' section for details",
+      "example": "Insufficient Funds"
+     },
+     "externalId": {
+      "type": "string",
+      "description": "External Id from external provider",
+      "example": "order_23733jd3u892"
+     },
+     "externalResultCode": {
+      "type": "string",
+      "description": "Result code from external provider",
+      "example": "03"
+     },
+     "customer": {
+      "$ref": "#/components/schemas/ResponseCustomer"
+     },
+     "billingAddress": {
+      "$ref": "#/components/schemas/BillingAddress"
+     },
+     "startRecurring": {
+      "type": "boolean",
+      "description": "Indicates whether this payment has started a recurring chain"
+     },
+     "preAuth": {
+      "type": "boolean",
+      "description": "Indicates whether this is a Pre-Authorization request (for 2-phase deposit)"
+     },
+     "recurringToken": {
+      "type": "string",
+      "description": "Token that can be used to continue the recurring chain"
+     },
+     "shopName": {
+      "type": "string",
+      "description": "The name of the shop this payment belongs to"
+     },
+     "terminalName": {
+      "type": "string",
+      "description": "The name of the provider that was used to process this payment"
+     },
+     "externalFeeAmount": {
+      "type": "number",
+      "description": "Provider fee. Filled only if supported by the provider.",
+      "example": 15
+     },
+     "externalFeeCurrency": {
+      "type": "string",
+      "description": "Provider fee currency. Filled only if supported by the provider.",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     },
+     "additionalParameters": {
+      "type": "object",
+      "description": "Additional parameters required by some payment providers. Contact support for more information.",
+      "additionalProperties": {
+       "type": "string"
+      },
+      "example": {
+       "tokenContractStandard": "BEP-20",
+       "cryptoCurrency": "USDT"
+      }
+     },
+     "externalRefs": {
+      "type": "object",
+      "description": "External references that can be used",
+      "additionalProperties": {
+       "type": "string"
+      },
+      "example": {
+       "txId": "11483992398383",
+       "providerSpecificInfo": "usefulInformation"
+      }
+     }
+    }
+   },
+   "PaymentOperation": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Operation Id"
+     },
+     "operation": {
+      "$ref": "#/components/schemas/Operation"
+     },
+     "started": {
+      "type": "string",
+      "format": "ISO 8601",
+      "description": "Operation start time",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "completed": {
+      "type": "string",
+      "format": "ISO 8601",
+      "description": "Operation end time",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "paymentState": {
+      "$ref": "#/components/schemas/PaymentState"
+     },
+     "outgoingMessages": {
+      "type": "string",
+      "description": "List of messages sent to external APIs during operation processing"
+     },
+     "incomingMessages": {
+      "type": "string",
+      "description": "List of messages received from external APIs during operation processing"
+     }
+    }
+   },
+   "SubscriptionRequest": {
+    "required": [
+     "frequency"
+    ],
+    "type": "object",
+    "properties": {
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description for subsequent recurring payments",
+      "example": "Subscription to service"
+     },
+     "amount": {
+      "type": "number",
+      "description": "The amount to be used for subsequent payments. If not specified, the amount of the original payment is used.",
+      "example": 99.99
+     },
+     "startTime": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time of the 1st cycle. if not specified, then calculated as (initialDeposit.createTime + frequency*frequencyUnit).",
+      "example": "2030-12-25T10:11:12"
+     },
+     "frequency": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The number of intervals after which a subscriber is billed. For example, if the frequencyUnit is DAY with an frequency of 2, the subscription is billed once every two days.",
+      "example": 2
+     },
+     "frequencyUnit": {
+      "type": "string",
+      "description": "The interval at which the subscription is billed. Use 'MINUTE' for testing purposes only.",
+      "example": "DAY",
+      "enum": [
+       "MINUTE",
+       "DAY",
+       "WEEK",
+       "MONTH"
+      ]
+     },
+     "numberOfCycles": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Required number of subsequent recurring payments. Unlimited if value is not specified.",
+      "example": 12
+     },
+     "retryStrategy": {
+      "$ref": "#/components/schemas/SubscriptionRetryStrategy"
+     }
+    },
+    "description": "Subscription to bill customers at regular intervals. Used only with 'startRecurring=true'."
+   },
+   "SubscriptionPatchRequest": {
+    "type": "object",
+    "properties": {
+     "state": {
+      "type": "string",
+      "description": "New subscription state",
+      "example": "CANCELLED",
+      "enum": [
+       "CANCELLED"
+      ]
+     }
+    }
+   },
+   "PaymentRequest": {
+    "required": [
+     "currency",
+     "paymentType"
+    ],
+    "type": "object",
+    "properties": {
+     "referenceId": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "Reference assigned by Merchant. Will not go outside the system. Will be sent unchanged in the PaymentResponse.",
+      "example": "payment_id=123;custom_ref=456"
+     },
+     "paymentType": {
+      "$ref": "#/components/schemas/PaymentType"
+     },
+     "paymentMethod": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "amount": {
+      "multipleOf": 1e-18,
+      "maximum": 1000000000,
+      "minimum": 0,
+      "type": "number",
+      "description": "Payment amount. Value 0.0 can be used only for Pre-Authorization requests. In other cases the amount must be ≥ 0.00001.",
+      "example": 11.12
+     },
+     "currency": {
+      "type": "string",
+      "description": "Payment currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "parentPaymentId": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Id of initial deposit for refunds, Id of initial recurring payment for subsequent payments",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description of the transaction shown to the Customer. Can be sent outside the system.",
+      "example": "Deposit 123 via TEST shop"
+     },
+     "card": {
+      "$ref": "#/components/schemas/Card"
+     },
+     "googlePay": {
+      "$ref": "#/components/schemas/GooglePay"
+     },
+     "applePay": {
+      "$ref": "#/components/schemas/ApplePay"
+     },
+     "customer": {
+      "$ref": "#/components/schemas/Customer"
+     },
+     "billingAddress": {
+      "$ref": "#/components/schemas/BillingAddress"
+     },
+     "returnUrl": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "URL to redirect Customer after processing",
+      "example": "https://mywebsite.com/{id}/{referenceId}/{state}/{type}"
+     },
+     "webhookUrl": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Url to receive payment status notifications",
+      "example": "https://mywebsite.com/webhooks"
+     },
+     "startRecurring": {
+      "type": "boolean",
+      "description": "Send 'true' if you want this payment to initiate recurring chain. Default is 'false'."
+     },
+     "preAuth": {
+      "type": "boolean",
+      "description": "Send 'true' if you want to request a Pre-Authorization charge (initiate a 2-phase deposit)."
+     },
+     "recurringToken": {
+      "type": "string",
+      "description": "To continue recurring chain, send a token from a previously initiated recurring payment."
+     },
+     "subscription": {
+      "$ref": "#/components/schemas/SubscriptionRequest"
+     },
+     "additionalParameters": {
+      "type": "object",
+      "description": "Additional parameters required by some payment providers. Contact support for more information.",
+      "additionalProperties": {
+       "type": "string"
+      },
+      "example": {
+       "bankCode": "ABHY0065032",
+       "countryOfBirth": "CY"
+      }
+     },
+     "checkoutStyle": {
+      "type": "string",
+      "description": "If shop has multiple checkout styles and you want to use a custom style for this specific payment, specify the style name using this parameter."
+     }
+    }
+   },
+   "DepositPatchRequest": {
+    "required": [
+     "customerIp"
+    ],
+    "type": "object",
+    "properties": {
+     "customerIp": {
+      "maxLength": 39,
+      "type": "string",
+      "description": "Customer IP address. Both v4 and v6 addresses are supported.",
+      "example": "152.13.130.125"
+     },
+     "ipCountryCode": {
+      "maxLength": 2,
+      "minLength": 2,
+      "type": "string",
+      "description": "Country of the specified customer IP address",
+      "example": "AU"
+     },
+     "customerUserAgent": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "User agent string for the browser. Equals the navigator.userAgent parameter in JavaScript.",
+      "example": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+     },
+     "browserWindowWidth": {
+      "type": "integer",
+      "description": "Browser window width in pixels. Equals the document.body.clientWidth parameter in JavaScript.",
+      "example": 1642
+     },
+     "browserWindowHeight": {
+      "type": "integer",
+      "description": "Browser window height in pixels. Equals the document.body.clientHeight parameter in JavaScript.",
+      "example": 883
+     },
+     "browserScreenWidth": {
+      "type": "integer",
+      "description": "Screen width in pixels. Equals the screen.width parameter in JavaScript.",
+      "example": 1710
+     },
+     "browserScreenHeight": {
+      "type": "integer",
+      "description": "Screen height in pixels. Equals the screen.height parameter in JavaScript.",
+      "example": 1107
+     },
+     "browserScreenColorDepth": {
+      "type": "integer",
+      "description": "Screen color depth in bits per pixel. Equals the screen.colorDepth parameter in JavaScript.",
+      "example": 30
+     },
+     "browserLanguage": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Language of the navigator. Equals the navigator.language parameter in JavaScript.",
+      "example": "en-GB"
+     },
+     "browserJavaEnabled": {
+      "maxLength": 39,
+      "type": "boolean",
+      "description": "Indicates if the browser is Java-enabled or not. Equals the navigator.javaEnabled() parameter in JavaScript.",
+      "example": true
+     },
+     "browserTimezoneOffset": {
+      "type": "integer",
+      "description": "Time zone difference, in minutes, from the current locale to UTC. Equals the new Date().getTimezoneOffset() parameter in JavaScript.",
+      "example": -120
+     }
+    }
+   },
+   "RegisterChargebackRequest": {
+    "type": "object",
+    "properties": {
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description of the chargeback",
+      "example": "Chargeback for order 123"
+     },
+     "created": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when the chargeback was created. Defaults to current time if not specified.",
+      "example": "2030-12-25T10:11:12"
+     },
+     "state": {
+      "type": "string",
+      "description": "Initial state of the chargeback payment. If not specified, the chargeback is created in an open state awaiting processing.",
+      "example": "COMPLETED",
+      "enum": [
+       "CANCELLED",
+       "DECLINED",
+       "COMPLETED"
+      ]
+     },
+     "webhookUrl": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "URL to receive chargeback status notifications",
+      "example": "https://mywebsite.com/webhooks"
+     }
+    }
+   },
+   "RejectPaymentRequest": {
+    "type": "object",
+    "properties": {
+     "rejectReason": {
+      "type": "string",
+      "description": "Optional reason for rejecting the withdrawal. Stored as the external result code on the payment.",
+      "example": "Suspicious activity"
+     }
+    }
+   },
+   "CaptureRequest": {
+    "type": "object",
+    "properties": {
+     "amount": {
+      "multipleOf": 1e-18,
+      "maximum": 1000000000,
+      "minimum": 1e-05,
+      "type": "number",
+      "description": "Capture amount. Should not exceed the authorized payment amount. If not specified, the authorized payment amount will be captured fully.",
+      "example": 11.12
+     }
+    }
+   },
+   "SubscriptionResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "$ref": "#/components/schemas/Subscription"
+     }
+    }
+   },
+   "PaymentResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "$ref": "#/components/schemas/PaymentResult"
+     }
+    }
+   },
+   "PaymentListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Payment"
+      }
+     }
+    }
+   },
+   "OperationListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/PaymentOperation"
+      }
+     }
+    }
+   },
+   "CustomerCardTokenListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CustomerCardToken"
+      }
+     }
+    }
+   },
+   "CustomerCardToken": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string",
+      "description": "Card token value",
+      "example": "09386bdeae4b4b0d9bff34eab812b41d"
+     },
+     "cardholderName": {
+      "type": "string",
+      "description": "The Cardholder's Name",
+      "example": "John Doe"
+     },
+     "panMasked": {
+      "type": "string",
+      "description": "Masked Pan",
+      "example": "411111***1112"
+     },
+     "expiryMonth": {
+      "type": "string",
+      "description": "Expiration Month",
+      "example": 1
+     },
+     "expiryYear": {
+      "type": "string",
+      "description": "Expiration Year",
+      "example": 2030
+     },
+     "brand": {
+      "$ref": "#/components/schemas/CardBrand"
+     },
+     "updated": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "savedByCustomer": {
+      "type": "boolean",
+      "description": "Indicates the saving method for the token. Returns true if explicitly saved by the customer, or false if automatically saved to the database.",
+      "example": true
+     }
+    }
+   },
+   "CustomerTerminalTokenListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CustomerTerminalToken"
+      }
+     }
+    }
+   },
+   "CustomerTerminalToken": {
+    "type": "object",
+    "properties": {
+     "key": {
+      "type": "string",
+      "description": "The key for specific token",
+      "example": "tokenType:APPLEPAY,lastDigits:1234"
+     },
+     "value": {
+      "type": "string",
+      "description": "The customers token",
+      "example": "BWugF1MZAQ8oGC9"
+     }
+    }
+   },
+   "CardBrand": {
+    "type": "string",
+    "description": "Card brand (for BASIC_CARD payment method only)",
+    "example": "VISA",
+    "enum": [
+     "AMEX",
+     "DINERS",
+     "DISCOVER",
+     "JCB",
+     "MAESTRO",
+     "MASTERCARD",
+     "MIR",
+     "RUPAY",
+     "UNIONPAY",
+     "VISA",
+     "HUMO",
+     "VERVE",
+     "TROY",
+     "UZCARD",
+     "UNKNOWN"
+    ]
+   },
+   "BalanceListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Balance"
+      }
+     }
+    }
+   },
+   "AvailableWithdrawalBalancesListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CurrencyAmount"
+      }
+     }
+    }
+   },
+   "BadRequestError": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:32:19.444+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "example": 400
+     },
+     "error": {
+      "type": "string",
+      "example": "Bad Request"
+     },
+     "message": {
+      "type": "string"
+     },
+     "errors": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "codes": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "arguments": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "codes": {
+            "type": "array",
+            "items": {
+             "type": "string"
+            }
+           },
+           "defaultMessage": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "defaultMessage": {
+         "type": "string"
+        },
+        "objectName": {
+         "type": "string"
+        },
+        "field": {
+         "type": "string"
+        },
+        "bindingFailure": {
+         "type": "boolean"
+        }
+       }
+      }
+     },
+     "path": {
+      "type": "string",
+      "example": "/api/v1/payments"
+     }
+    }
+   },
+   "UnauthorizedError": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "integer",
+      "example": 401
+     },
+     "error": {
+      "type": "string",
+      "example": "Unauthorized"
+     },
+     "message": {
+      "type": "string",
+      "example": "Invalid token"
+     },
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2020-10-07T13:32:19.444+00:00"
+     },
+     "path": {
+      "type": "string",
+      "example": "/api/v1/payments"
+     }
+    }
+   },
+   "NotFoundError": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "integer",
+      "example": 404
+     },
+     "error": {
+      "type": "string",
+      "example": "Not Found"
+     },
+     "message": {
+      "type": "string",
+      "example": "Payment not found"
+     },
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2024-10-07T13:32:19.444+00:00"
+     },
+     "path": {
+      "type": "string",
+      "example": "/api/v1/payments"
+     }
+    }
+   }
+  },
+  "responses": {
+   "BadRequest": {
+    "description": "Bad request",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/BadRequestError"
+      }
+     }
+    }
+   },
+   "Unauthorized": {
+    "description": "Unauthorized",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/UnauthorizedError"
+      }
+     }
+    }
+   },
+   "NotFound": {
+    "description": "Not Found",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/NotFoundError"
+      }
+     }
+    }
+   }
+  },
+  "examples": {
+   "SimpleDepositPatchRequest": {
+    "summary": "Request with a minimum set of parameters",
+    "value": {
+     "customerIp": "152.13.130.125"
+    }
+   },
+   "SimpleDepositRequest": {
+    "summary": "Simple deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "currency": "EUR"
+    }
+   },
+   "BasicCardHppDepositRequest": {
+    "summary": "Basic card HPP deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     }
+    }
+   },
+   "BasicCardStsDepositRequest": {
+    "summary": "Basic card STS deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "card": {
+      "cardNumber": "4000000000000002",
+      "cardholderName": "John Watson",
+      "cardSecurityCode": "123",
+      "expiryMonth": "01",
+      "expiryYear": "2030"
+     }
+    }
+   },
+   "GooglePayStsDepositRequest": {
+    "summary": "GooglePay STS deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "GOOGLEPAY",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "googlePay": {
+      "apiVersion": 2,
+      "apiVersionMinor": 0,
+      "paymentMethodData": {
+       "description": "Test Card: Visa••••1111",
+       "type": "CARD",
+       "info": {
+        "cardDetails": "1111",
+        "cardNetwork": "VISA"
+       },
+       "tokenizationData": {
+        "token": "{\"signature\":\"MEUCIBF...",
+        "type": "PAYMENT_GATEWAY"
+       }
+      }
+     }
+    }
+   },
+   "GooglePayDecryptedTokenStsDepositRequest": {
+    "summary": "GooglePay decrypted token STS deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "GOOGLEPAY",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "googlePay": {
+      "apiVersion": 2,
+      "apiVersionMinor": 0,
+      "paymentMethodData": {
+       "description": "Test Card: Visa••••1111",
+       "type": "CARD",
+       "info": {
+        "cardDetails": "1111",
+        "cardNetwork": "VISA"
+       },
+       "tokenizationData": {
+        "decryptedToken": {
+         "gatewayMerchantId": "1111",
+         "messageExpiration": "1785089091344",
+         "messageId": "AH2EjtfTgkPcxxMyV_hepdG8AWg05MS0U5A7vyQf8nXDr5IbajqsPvSTK_j77C-ji7-D2Eelk9JwoOSJu4GlZ0amkmR8tP1_DGmjegAjMCpXVrHTjz_eWbU",
+         "paymentMethod": "CARD",
+         "paymentMethodDetails": {
+          "pan": "4111111111111111",
+          "expirationMonth": 12,
+          "expirationYear": 2030,
+          "authMethod": "CRYPTOGRAM_3DS",
+          "cryptogram": "AgAAAAAABk4DWZ4C28yUQAAAAAA=",
+          "eciIndicator": "07",
+          "assuranceDetails": {
+           "accountVerified": true,
+           "cardHolderAuthenticated": null
+          }
+         }
+        },
+        "type": "CARD"
+       }
+      }
+     }
+    }
+   },
+   "GooglePayDecryptedTokenPanOnlyStsDepositRequest": {
+    "summary": "GooglePay decrypted token PAN only STS deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "GOOGLEPAY",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "googlePay": {
+      "apiVersion": 2,
+      "apiVersionMinor": 0,
+      "paymentMethodData": {
+       "description": "Test Card: Visa••••1111",
+       "type": "CARD",
+       "info": {
+        "cardDetails": "1111",
+        "cardNetwork": "VISA"
+       },
+       "tokenizationData": {
+        "decryptedToken": {
+         "gatewayMerchantId": "1111",
+         "messageExpiration": "1785089091344",
+         "messageId": "AH2EjtfTgkPcxxMyV_hepdG8AWg05MS0U5A7vyQf8nXDr5IbajqsPvSTK_j77C-ji7-D2Eelk9JwoOSJu4GlZ0amkmR8tP1_DGmjegAjMCpXVrHTjz_eWbU",
+         "paymentMethod": "CARD",
+         "paymentMethodDetails": {
+          "pan": "4111111111111111",
+          "expirationMonth": 12,
+          "expirationYear": 2030,
+          "authMethod": "PAN_ONLY",
+          "cryptogram": null,
+          "eciIndicator": null,
+          "assuranceDetails": {
+           "accountVerified": true,
+           "cardHolderAuthenticated": false
+          }
+         }
+        },
+        "type": "CARD"
+       }
+      }
+     }
+    }
+   },
+   "ApplePayStsDepositRequest": {
+    "summary": "ApplePay STS deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "APPLEPAY",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "applePay": {
+      "transactionIdentifier": "813e041...",
+      "paymentData": {
+       "data": "nA6KNkp6m1...",
+       "signature": "MIAGCSqG...",
+       "header": {
+        "publicKeyHash": "PHTRt...",
+        "ephemeralPublicKey": "MFkwEw...",
+        "transactionId": "813e04..."
+       },
+       "version": "EC_v1"
+      },
+      "paymentMethod": {
+       "displayName": "MasterCard 1111",
+       "network": "MasterCard",
+       "type": "debit"
+      },
+      "billingContact": {
+       "subAdministrativeArea\"": "",
+       "locality": "London",
+       "addressLines": [
+        "221b Baker St, Marylebone"
+       ],
+       "subLocality": "",
+       "postalCode": "77177",
+       "administrativeArea": "",
+       "countryCode": "GB",
+       "givenName": "John",
+       "familyName": "Doe",
+       "country": "Great Britain"
+      }
+     }
+    }
+   },
+   "ApplePayDecryptedDataStsDepositRequest": {
+    "summary": "ApplePay decryptedData STS deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "APPLEPAY",
+     "amount": 10,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "applePay": {
+      "transactionIdentifier": "813e041...",
+      "paymentData": {
+       "decryptedData": {
+        "applicationPrimaryAccountNumber": "4000000000000002",
+        "applicationExpirationDate": "281031",
+        "currencyCode": "826",
+        "transactionAmount": 100,
+        "deviceManufacturerIdentifier": "050110030273",
+        "paymentDataType": "3DSecure",
+        "paymentData": {
+         "onlinePaymentCryptogram": "MJ9uEpfstQTiARO+WM84AoABFIA="
+        }
+       }
+      },
+      "paymentMethod": {
+       "displayName": "Visa 0002",
+       "network": "Visa",
+       "type": "debit"
+      },
+      "billingContact": {
+       "subAdministrativeArea\"": "",
+       "locality": "London",
+       "addressLines": [
+        "221b Baker St, Marylebone"
+       ],
+       "subLocality": "",
+       "postalCode": "77177",
+       "administrativeArea": "",
+       "countryCode": "GB",
+       "givenName": "John",
+       "familyName": "Doe",
+       "country": "Great Britain"
+      }
+     }
+    }
+   },
+   "BankTransferDepositRequest": {
+    "summary": "Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER",
+     "amount": 150,
+     "currency": "BOL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "27 821234567",
+      "documentType": "BO_DNI",
+      "documentNumber": "8952413"
+     },
+     "billingAddress": {
+      "countryCode": "BO"
+     }
+    }
+   },
+   "BankTransferArDepositRequest": {
+    "summary": "(Argentina) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_AR",
+     "amount": 150,
+     "currency": "ARS",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "documentType": "AR_DNI",
+      "documentNumber": "33655208"
+     }
+    }
+   },
+   "BankTransferBoDepositRequest": {
+    "summary": "(Bolivia) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_BO",
+     "amount": 150,
+     "currency": "BOL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "27 821234567",
+      "documentType": "BO_DNI",
+      "documentNumber": "8952413"
+     }
+    }
+   },
+   "BankTransferCrDepositRequest": {
+    "summary": "(Costa Rica) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_CR",
+     "amount": 150,
+     "currency": "CRC",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     }
+    }
+   },
+   "BankTransferEcDepositRequest": {
+    "summary": "(Ecuador) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_EC",
+     "amount": 150,
+     "currency": "USD",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "59 30999000000",
+      "documentType": "EC_CC",
+      "documentNumber": "2234583876"
+     }
+    }
+   },
+   "BankTransferGtDepositRequest": {
+    "summary": "(Guatemala) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_GT",
+     "amount": 150,
+     "currency": "GTM",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     }
+    }
+   },
+   "BankTransferHnDepositRequest": {
+    "summary": "(Honduras) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_HN",
+     "amount": 150,
+     "currency": "HNL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     }
+    }
+   },
+   "BankTransferMxDepositRequest": {
+    "summary": "(Mexico) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_MX",
+     "amount": 150,
+     "currency": "MXN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "59 30999000000",
+      "documentType": "MX_CC",
+      "documentNumber": "2234583876"
+     }
+    }
+   },
+   "BankTransferPaDepositRequest": {
+    "summary": "(Panama) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_PA",
+     "amount": 150,
+     "currency": "PEN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     }
+    }
+   },
+   "BankTransferUyDepositRequest": {
+    "summary": "(Uruguay) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_UY",
+     "amount": 150,
+     "currency": "UYU",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     }
+    }
+   },
+   "BankTransferClDepositRequest": {
+    "summary": "(Chile) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_CL",
+     "amount": 1000,
+     "currency": "CLP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "CL_CI",
+      "documentNumber": "88682998"
+     }
+    }
+   },
+   "BankTransferCoDepositRequest": {
+    "summary": "(Colombia) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_CO",
+     "amount": 1000,
+     "currency": "COP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "57 3205671968",
+      "documentType": "CO_CC",
+      "documentNumber": "1073505526"
+     }
+    }
+   },
+   "BankTransferPeDepositRequest": {
+    "summary": "(Peru) Bank Transfer deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BANKTRANSFER_PE",
+     "amount": 100,
+     "currency": "PEN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "PE_DNI",
+      "documentNumber": "123456789"
+     }
+    }
+   },
+   "BoletoDepositRequest": {
+    "summary": "Boleto deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "BOLETO",
+     "amount": 150,
+     "currency": "BRL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "59 30999000000",
+      "documentType": "BR_CPF",
+      "documentNumber": "12345678909"
+     },
+     "billingAddress": {
+      "countryCode": "BR",
+      "addressLine1": "Rua da avenida",
+      "addressLine2": "Quadra 01",
+      "postalCode": "12332-343",
+      "city": "Florianópolis",
+      "state": "SC"
+     }
+    }
+   },
+   "CashDepositRequest": {
+    "summary": "Cash deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CASH",
+     "amount": 10,
+     "currency": "UYU",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentNumber": "1234567890"
+     },
+     "billingAddress": {
+      "countryCode": "UY"
+     },
+     "additionalParameters": {
+      "paymentService": "punto_pago"
+     }
+    }
+   },
+   "CashEcDepositRequest": {
+    "summary": "(Ecuador) Cash deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CASH_EC",
+     "amount": 10,
+     "currency": "USD",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "593 987527953",
+      "documentNumber": "0916948904"
+     }
+    }
+   },
+   "CipDepositRequest": {
+    "summary": "CIP deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CIP",
+     "amount": 10,
+     "currency": "PEN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "PE_DNI",
+      "documentNumber": "123456789"
+     },
+     "billingAddress": {
+      "countryCode": "PE"
+     }
+    }
+   },
+   "EfectyDepositRequest": {
+    "summary": "(Colombia) Efecty deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "EFECTY",
+     "amount": 10,
+     "currency": "COP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "57 3205671968",
+      "documentType": "CO_CC",
+      "documentNumber": "123456789"
+     }
+    }
+   },
+   "ExternalHppDepositRequest": {
+    "summary": "External HPP deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "EXTERNAL_HPP",
+     "amount": 10,
+     "currency": "PEN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "PE_DNI",
+      "documentNumber": "123456789"
+     },
+     "billingAddress": {
+      "countryCode": "PE"
+     }
+    }
+   },
+   "MobileMoneyDepositRequest": {
+    "summary": "External HPP deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "MOBILE_MONEY",
+     "amount": 10,
+     "currency": "USD",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "59 30997783187",
+      "documentType": "EC_CC",
+      "documentNumber": "1709698227"
+     },
+     "billingAddress": {
+      "countryCode": "EC"
+     }
+    }
+   },
+   "NequiDepositRequest": {
+    "summary": "(Colombia) NEQUI deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "NEQUI",
+     "amount": 5000,
+     "currency": "COP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "57 3205671968",
+      "documentType": "CO_CC",
+      "documentNumber": "1045726853"
+     }
+    }
+   },
+   "PagofacilDepositRequest": {
+    "summary": "(Argentina) Pagofacil deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PAGOFACIL",
+     "amount": 5000,
+     "currency": "ARS",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "54 91161234567",
+      "documentType": "AR_PP",
+      "documentNumber": "12345678909"
+     }
+    }
+   },
+   "PicpayDepositRequest": {
+    "summary": "(Brazil) PicPay deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PICPAY",
+     "amount": 5000,
+     "currency": "BRL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "BR_CPF",
+      "documentNumber": "12345678909"
+     }
+    }
+   },
+   "PixDepositRequest": {
+    "summary": "(Brazil) PIX deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PIX",
+     "amount": 100,
+     "currency": "BRL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "BR_CPF",
+      "documentNumber": "65745728000"
+     }
+    }
+   },
+   "PseDepositRequest": {
+    "summary": "(Colombia) PSE deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PSE",
+     "amount": 5000,
+     "currency": "COP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "57 3205671968",
+      "documentType": "CO_CC",
+      "documentNumber": "1045726853"
+     }
+    }
+   },
+   "QrBoDepositRequest": {
+    "summary": "(Bolivia) QR deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "QR",
+     "amount": 5000,
+     "currency": "BOB",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "591 71234567",
+      "documentType": "BO_CI",
+      "documentNumber": "8952413"
+     },
+     "billingAddress": {
+      "countryCode": "BO"
+     }
+    }
+   },
+   "YapeDepositRequest": {
+    "summary": "(Peru) Yape deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PEN",
+     "amount": 5000,
+     "currency": "PEN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "51 11912345678",
+      "documentType": "PE_PP",
+      "documentNumber": "12345678909"
+     }
+    }
+   },
+   "CryptoBtcDepositRequest": {
+    "summary": "Crypto (BTC) deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CRYPTO",
+     "amount": 1,
+     "currency": "BTC",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     }
+    }
+   },
+   "CryptoBtcBep20DepositRequest": {
+    "summary": "Crypto (BTC BEP-20) deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CRYPTO",
+     "amount": 1,
+     "currency": "BTC",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     },
+     "additionalParameters": {
+      "tokenContractStandard": "BEP-20"
+     }
+    }
+   },
+   "CryptoUsdtTrc20DepositRequest": {
+    "summary": "Crypto (USDT TRC-20) deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CRYPTO",
+     "amount": 1,
+     "currency": "USDT",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     },
+     "additionalParameters": {
+      "tokenContractStandard": "TRC-20"
+     }
+    }
+   },
+   "FiatToCryptoDepositRequest": {
+    "summary": "Crypto (EUR to USDT TRC-20) deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "CRYPTO",
+     "amount": 1,
+     "currency": "EUR",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe"
+     },
+     "additionalParameters": {
+      "tokenContractStandard": "TRC-20",
+      "cryptoCurrency": "USDT"
+     }
+    }
+   },
+   "PaytmDepositRequest": {
+    "summary": "(India) Paytm deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PAYTM",
+     "amount": 100,
+     "currency": "INR",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "91 9876543210"
+     }
+    }
+   },
+   "PhonePeDepositRequest": {
+    "summary": "(India) PhonePe deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PHONEPE",
+     "amount": 100,
+     "currency": "INR",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "91 9876543210"
+     }
+    }
+   },
+   "UpiCollectDepositRequest": {
+    "summary": "(India) UPI Collect deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "UPI",
+     "amount": 100,
+     "currency": "INR",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "91 9876543210",
+      "accountNumber": "9876543210@upi"
+     }
+    }
+   },
+   "UpiIntentDepositRequest": {
+    "summary": "(India) UPI Intent deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "UPI",
+     "amount": 100,
+     "currency": "INR",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "91 9876543210"
+     }
+    }
+   },
+   "SpeiDepositRequest": {
+    "summary": "(Mexico) SPEI deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "SPEI",
+     "amount": 220,
+     "currency": "MXN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "52 5512345678",
+      "documentType": "MX_CURP",
+      "documentNumber": "RICJ750331HDFVMN04"
+     }
+    }
+   },
+   "PayPoDepositRequest": {
+    "summary": "PayPo deposit",
+    "value": {
+     "paymentType": "DEPOSIT",
+     "paymentMethod": "PAYPO",
+     "amount": 150,
+     "currency": "PLN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "my@email.com",
+      "phone": "48 727516980"
+     },
+     "billingAddress": {
+      "countryCode": "PL",
+      "addressLine1": "Test",
+      "city": "Warszawa",
+      "postalCode": "02-672"
+     }
+    }
+   },
+   "BasicCardWithdrawalRequest": {
+    "summary": "Basic card withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "amount": 10.01,
+     "currency": "GBP",
+     "customer": {
+      "email": "jw@mail.com",
+      "phone": "44 02072243688"
+     },
+     "billingAddress": {
+      "countryCode": "GB",
+      "city": "London",
+      "addressLine1": "221b Baker St, Marylebone",
+      "postalCode": "NW1 6XE"
+     },
+     "card": {
+      "cardNumber": "4000000000000002",
+      "cardholderName": "John Watson",
+      "expiryMonth": "01",
+      "expiryYear": "2030"
+     }
+    }
+   },
+   "BankTransferWithdrawalRequest": {
+    "summary": "Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER",
+     "amount": 5,
+     "currency": "BOL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "27 821234567",
+      "documentType": "BO_CI",
+      "documentNumber": "8952413",
+      "accountNumber": "7884321419",
+      "bankCode": "1",
+      "accountType": "CHECKING"
+     },
+     "billingAddress": {
+      "countryCode": "BO"
+     }
+    }
+   },
+   "BankTransferArWithdrawalRequest": {
+    "summary": "(Argentina) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_AR",
+     "amount": 5,
+     "currency": "ARS",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "documentType": "AR_CUIT",
+      "documentNumber": "1234578543",
+      "accountNumber": "gggtr65665433",
+      "bankCode": "44"
+     }
+    }
+   },
+   "BankTransferBoWithdrawalRequest": {
+    "summary": "(Bolivia) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_BO",
+     "amount": 5,
+     "currency": "BOL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john@example.com",
+      "phone": "27 821234567",
+      "documentType": "BO_CI",
+      "documentNumber": "8952413",
+      "accountNumber": "7884321419",
+      "bankCode": "1",
+      "accountType": "CHECKING"
+     }
+    }
+   },
+   "BankTransferClWithdrawalRequest": {
+    "summary": "(Chile) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_CL",
+     "amount": 500,
+     "currency": "CLP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "CL_CI",
+      "documentNumber": "88682998",
+      "accountType": "SAVINGS",
+      "accountNumber": "0775503009",
+      "bankCode": "001"
+     }
+    }
+   },
+   "BankTransferCoWithdrawalRequest": {
+    "summary": "(Colombia) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_CO",
+     "amount": 5000,
+     "currency": "COP",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "57 3205671968",
+      "documentType": "CO_CC",
+      "documentNumber": "1073505526",
+      "accountType": "SAVINGS",
+      "accountNumber": "04800001840",
+      "bankCode": "1007"
+     }
+    }
+   },
+   "BankTransferCrWithdrawalRequest": {
+    "summary": "(Costa Rica) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_CR",
+     "amount": 5000,
+     "currency": "CRC",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "506 83124579",
+      "documentType": "CR_CDI",
+      "documentNumber": "1234578543",
+      "accountNumber": "gggtr65665433",
+      "bankCode": "104"
+     }
+    }
+   },
+   "BankTransferEcWithdrawalRequest": {
+    "summary": "(Ecuador) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_EC",
+     "amount": 150,
+     "currency": "USD",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "506 83124579",
+      "documentType": "EC_CC",
+      "documentNumber": "2234583876",
+      "accountNumber": "7884321419",
+      "bankCode": "0010",
+      "accountType": "CHECKING"
+     }
+    }
+   },
+   "BankTransferGtWithdrawalRequest": {
+    "summary": "(Guatemala) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_GT",
+     "amount": 150,
+     "currency": "GTQ",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "502 12345678",
+      "documentType": "GT_CUI",
+      "documentNumber": "2234583876",
+      "accountNumber": "7884321419",
+      "bankCode": "0010",
+      "accountType": "CHECKING"
+     }
+    }
+   },
+   "BankTransferHnWithdrawalRequest": {
+    "summary": "(Honduras) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_HN",
+     "amount": 150,
+     "currency": "HNL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "502 12345678",
+      "documentNumber": "2234583876",
+      "accountNumber": "7884321419",
+      "bankCode": "0010",
+      "accountType": "CHECKING"
+     }
+    }
+   },
+   "BankTransferMxWithdrawalRequest": {
+    "summary": "(Mexico) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_MX",
+     "amount": 220,
+     "currency": "MXN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "52 5512345678",
+      "documentType": "MX_CURP",
+      "documentNumber": "RICJ750331HDFVMN04",
+      "accountType": "SAVINGS",
+      "accountNumber": "072180011751301416",
+      "bankCode": "001"
+     }
+    }
+   },
+   "BankTransferPeWithdrawalRequest": {
+    "summary": "(Peru) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_PE",
+     "amount": 100,
+     "currency": "PEN",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "PE_DNI",
+      "documentNumber": "10710682",
+      "accountType": "SAVINGS",
+      "accountNumber": "19323671378081",
+      "bankCode": "002"
+     }
+    }
+   },
+   "BankTransferUyWithdrawalRequest": {
+    "summary": "(Uruguay) Bank Transfer withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "BANKTRANSFER_UY",
+     "amount": 100,
+     "currency": "UYU",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "UY_CI",
+      "documentNumber": "10710682",
+      "accountType": "SAVINGS",
+      "accountNumber": "19323671378081",
+      "bankCode": "002"
+     }
+    }
+   },
+   "PixWithdrawalRequest": {
+    "summary": "(Brazil) PIX withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "PIX",
+     "amount": 100,
+     "currency": "BRL",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentType": "BR_CPF",
+      "documentNumber": "65745728000",
+      "accountNumber": "jd@email.com"
+     }
+    }
+   },
+   "CashWithdrawalRequest": {
+    "summary": "Cash withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "CASH",
+     "amount": 10,
+     "currency": "GTQ",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "documentNumber": "1234567890"
+     },
+     "billingAddress": {
+      "countryCode": "GT"
+     },
+     "additionalParameters": {
+      "paymentService": "akisi"
+     }
+    }
+   },
+   "ImpsWithdrawalRequest": {
+    "summary": "(India) IMPS withdrawal",
+    "value": {
+     "paymentType": "WITHDRAWAL",
+     "paymentMethod": "IMPS",
+     "amount": 120,
+     "currency": "INR",
+     "customer": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "jd@mail.com",
+      "phone": "91 7236009152",
+      "accountNumber": "072180011751301416",
+      "bankBranchCode": "ABHY0065001"
+     }
+    }
+   },
+   "RefundRequest": {
+    "summary": "Refund",
+    "value": {
+     "paymentType": "REFUND",
+     "amount": 10.01,
+     "currency": "GBP",
+     "parentPaymentId": "96365a23dca04a5a9bcbb0031e7b06ac"
+    }
+   },
+   "CreateDepositResponse": {
+    "summary": "Deposit",
+    "value": {
+     "timestamp": "2024-09-24T20:29:11.632+00:00",
+     "status": 200,
+     "result": {
+      "id": "96365a23dca04a5a9bcbb0031e7b06ac",
+      "paymentType": "DEPOSIT",
+      "state": "CHECKOUT",
+      "currency": "GBP",
+      "redirectUrl": "https://gateway-domain.com/payment/96365a23dca04a5a9bcbb0031e7b06ac"
+     }
+    }
+   },
+   "CreateWithdrawalResponse": {
+    "summary": "Withdrawal",
+    "value": {
+     "timestamp": "2024-09-24T20:29:11.632+00:00",
+     "status": 200,
+     "result": {
+      "id": "96365a23dca04a5a9bcbb0031e7b06ac",
+      "paymentType": "WITHDRAWAL",
+      "state": "PENDING",
+      "currency": "GBP"
+     }
+    }
+   },
+   "CreateRefundResponse": {
+    "summary": "Refund",
+    "value": {
+     "timestamp": "2024-09-24T20:29:11.632+00:00",
+     "status": 200,
+     "result": {
+      "id": "4e2ca455643c41fab7c611f003907ad5",
+      "paymentType": "REFUND",
+      "state": "PENDING",
+      "currency": "GBP",
+      "parentPaymentId": "96365a23dca04a5a9bcbb0031e7b06ac"
+     }
+    }
+   }
+  },
+  "securitySchemes": {
+   "BearerAuth": {
+    "type": "http",
+    "description": "The client sends HTTP requests with the Authorization header that contains the word Bearer followed by a space and the Shop Api Key.",
+    "scheme": "bearer"
+   },
+   "SignatureAuth": {
+    "type": "apiKey",
+    "description": "HMAC-SHA256 hash generated from JSON body using Shop Signing Key as a secret.",
+    "name": "Signature",
+    "in": "header"
+   }
+  }
+ },
+ "security": [
+  {
+   "BearerAuth": []
+  }
+ ],
+ "tags": [
+  {
+   "name": "Payments",
+   "description": "Payments API"
+  },
+  {
+   "name": "Customers",
+   "description": "Customers API"
+  },
+  {
+   "name": "Subscriptions",
+   "description": "Subscriptions API"
+  },
+  {
+   "name": "Balances",
+   "description": "Withdrawal balances API"
+  },
+  {
+   "name": "Error codes",
+   "description": "| Code | Description                                                      |\n|------|------------------------------------------------------------------|\n| 1.00 | Illegal Workflow State                                           |\n| 1.01 | Not Found                                                        |\n| 1.02 | Communication Problem                                            |\n| 1.03 | Internal Server Error                                            |\n| 1.04 | Cancelled by Timeout                                             |\n| 1.05 | Terminal not Found                                               |\n| 1.06 | Recurring Token not Found                                        |\n| 1.07 | Payer Unaccepted                                                 |\n| 1.08 | Invalid Amount                                                   |\n| 1.09 | Invalid Currency                                                 |\n| 1.10 | Insufficient Balance                                             |\n| 1.11 | Processing Limits Reached                                        |\n| 2.00 | Cancelled by Customer                                            |\n| 3.00 | Declined by Acquirer                                             |\n| 3.01 | Declined by Acquirer: Anti-fraud                                 |\n| 3.02 | Invalid request format or missing required parameters            |\n| 3.03 | Acquirer Malfunction                                             |\n| 3.04 | Acquirer Timeout                                                 |\n| 3.05 | Acquirer Limits Reached                                          |\n| 3.06 | Declined by Acquirer: Card Scheme                                |\n| 3.07 | Declined by Acquirer: Card Data                                  |\n| 3.08 | Declined by Acquirer: Business Rules                             |\n| 3.09 | SCA required                                                     |\n| 3.10 | Unknown Error Code                                               |\n| 3.11 | Payer cannot pay                                                 |\n| 3.12 | Invalid ID Document                                              |\n| 3.13 | ID Document Restrictions                                         |\n| 3.14 | Declined Due to Age Requirements                                 |\n| 3.15 | ID Document Under Temporary Restrictions                         |\n| 3.16 | Duplicate Payment                                                |\n| 3.17 | Channel not active                                               |\n| 3.18 | Cancelled or abandoned transaction                               |\n| 3.19 | Card PAN blacklisted                                             |\n| 3.20 | Card PAN not whitelisted                                         |\n| 3.21 | Invalid phone number                                             |\n| 3.22 | Card BIN country not allowed                                     |\n| 3.23 | Bank does not exist or not supported                             |\n| 3.24 | Requisites Unavailable                                           |\n| 3.25 | Document type is required                                        |\n| 3.26 | Invalid document type and/or document                            |\n| 3.27 | Amount lower than minimum                                        |\n| 3.28 | Amount higher than maximum                                       |\n| 3.29 | Transaction has chargeback already                               |\n| 3.30 | Invalid Email                                                    |\n| 3.31 | Bank is temporarily unavailable                                  |\n| 4.00 | Declined by Issuer                                               |\n| 4.01 | Insufficient Funds                                               |\n| 4.02 | Do Not Honor                                                     |\n| 4.03 | Invalid Account Number                                           |\n| 4.04 | Declined by Issuer: Invalid card expiration date                 |\n| 4.05 | Issuer Limits Reached                                            |\n| 4.06 | Card Lost or not active                                          |\n| 4.07 | Invalid Security Code                                            |\n| 4.08 | Declined by Issuer: Business Rules                               |\n| 4.09 | Declined by Issuer: Anti-fraud                                   |\n| 4.10 | Transaction not permitted to cardholder                          |\n| 4.11 | AVS failed                                                       |\n| 4.12 | Declined by Issuer: Invalid email                                |\n| 4.13 | Declined by Issuer: Invalid card number                          |\n| 4.14 | Declined by Issuer: PIN attempts limit exceeded                  |\n| 4.15 | The bank has requested a retry of the transaction                |\n| 5.00 | Declined by 3DS                                                  |\n| 5.01 | 3DS Timeout                                                      |\n| 5.02 | ACS malfunction                                                  |\n| 6.00 | Declined by Internal Anti-fraud                                  |\n| 6.01 | Card PAN Blacklisted                                             |\n| 6.02 | Customer Email Blacklisted                                       |\n| 6.03 | Card Issuing Country Restricted                                  |\n| 6.04 | IP Country Restricted                                            |\n| 6.05 | Restricted Currency                                              |\n| 6.06 | Invalid Amount                                                   |\n| 6.07 | IP Country Must Be Equal to Billing Country                      |\n| 6.08 | IP Country Must Be Equal to Card Issuing Country                 |\n| 6.09 | Billing Country Must Be Equal to Card Issuing Country            |\n| 6.10 | Payment Created Within Closed Period of Day                      |\n| 6.11 | Card PAN not Whitelisted                                         |\n| 6.12 | Cardholder name is invalid                                       |\n| 6.13 | The same card is used by different customers                     |\n| 6.14 | Customer Phone Blacklisted                                       |\n| 6.15 | Card Brand not supported                                         |\n| 6.21 | Limit exceeded: Number of completed deposits                     |\n| 6.22 | Limit exceeded: Number of completed deposits for card            |\n| 6.23 | Limit exceeded: Number of declined deposits for card             |\n| 6.24 | Limit exceeded: Number of cards for IP address                   |\n| 6.25 | Limit exceeded: Number of IP addresses for card                  |\n| 6.26 | Limit exceeded: IP country does not match card country           |\n| 6.27 | Limit exceeded: Same amount and currency for card                |\n| 6.28 | Limit exceeded: Amount of deposits in specified currency         |\n| 6.29 | Limit exceeded: Amount of deposits for card and currency         |\n| 6.30 | Limit exceeded: Amount of deposits in base currency              |\n| 6.31 | Limit exceeded: Amount of deposits for card in base currency     |\n| 6.32 | Limit exceeded: Number of IP countries for card                  |\n| 6.33 | Limit exceeded: Amount of deposits for customer in base currency |\n| 6.34 | Limit exceeded: Withdrawal amount for customer in base currency  |\n| 6.35 | Billing Country Restricted                                       |\n| 6.36 | Customer Citizenship Country Restricted                          |\n| 6.37 | Limit exceeded: Number of withdrawals                            |\n| 6.38 | Limit exceeded: Amount of withdrawals in specified currency      |\n| 6.39 | Card BIN Blacklisted                                             |\n| 6.40 | UPI VPA Blacklisted                                              |\n| 6.41 | ID Document Blacklisted                                          |\n| 6.42 | Limit exceeded: Decline deposits streak for card                 |\n| 6.43 | Limit exceeded: Incomplete deposits APM streak for email         |\n| 6.44 | Customer email contains restricted word                          |\n| 6.45 | Limit exceeded: Pending deposits for customer                    |\n| 6.46 | Limit exceeded: Pending same amount deposits for customer        |\n| 6.47 | Limit exceeded: Number of completed deposits for email           |\n| 6.48 | Limit exceeded: Number of completed deposits for IP address      |\n| 6.49 | Limit exceeded: Number of cards for customer                     |\n| 6.50 | Number of cards for customer                                     |\n| 6.51 | Suspicious Email                                                 |\n| 6.52 | Blacklisted IP Address                                           |\n| 6.53 | Limit exceeded: Number of error codes in deposits for email      |\n| 7.00 | Declined by External Anti-fraud                                  |\n| 7.01 | External Anti-fraud Communication Problem                        |\n| 8.00 | Rejected by Merchant                                             |\n"
+  },
+  {
+   "name": "Testing",
+   "description": "For a successful deposit in the sandbox environment, the amount should be less than 10000000. For test withdrawals and refunds, the limit is 10000.\n### Visa Test cards\n| Card Number         | Result                                                         |\n|---------------------|----------------------------------------------------------------|\n| 4000 0000 0000 0002 | 3D-Secure enrolled, successful authorization                   |\n| 4242 4242 4242 4242 | 3D-Secure enrolled, declined authorization                     |\n| 4000 0000 0000 0408 | Not enrolled for 3D-Secure, successful authorization           |\n| 4000 0000 0000 0416 | Not enrolled for 3D-Secure, declined authorization             |\n### Mastercard Test cards\n| Card Number         | Result                                                         |\n|---------------------|----------------------------------------------------------------|\n| 5555 0000 0000 0008 | 3D-Secure enrolled, successful authorization                   |\n| 5555 0000 0000 0438 | 3D-Secure enrolled, declined authorization                     |\n| 5555 0000 0000 0107 | Not enrolled for 3D-Secure, successful authorization           |\n| 5555 0000 0000 0115 | Not enrolled for 3D-Secure, declined authorization             |\n"
+  }
+ ]
+}

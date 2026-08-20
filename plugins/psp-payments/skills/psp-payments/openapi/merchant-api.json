@@ -1,0 +1,4480 @@
+{
+ "openapi": "3.1.1",
+ "info": {
+  "title": "pay.tech API",
+  "description": "Merchant API\n",
+  "license": {
+   "name": "Apache 2.0",
+   "identifier": "Apache-2.0"
+  },
+  "version": "1.0.341"
+ },
+ "servers": [
+  {
+   "url": "https://engine-sandbox.pay.tech",
+   "description": "Sandbox"
+  },
+  {
+   "url": "https://engine.pay.tech",
+   "description": "Production"
+  }
+ ],
+ "paths": {
+  "/merchant-api/v1/payments": {
+   "get": {
+    "tags": [
+     "Payments"
+    ],
+    "summary": "Get payments",
+    "description": "Get a list of payments sorted by creation date (most recent first)",
+    "operationId": "getPayments",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     },
+     {
+      "name": "created.gte",
+      "in": "query",
+      "description": "Return only payments created at or after the specified time. Default is beginning of the current day.",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2025-10-12T10:26:18"
+      }
+     },
+     {
+      "name": "created.lt",
+      "in": "query",
+      "description": "If passed, return only payments created strictly before the specified time",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2025-10-13T10:39:34"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Payment List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PaymentListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/operations": {
+   "get": {
+    "tags": [
+     "Operations"
+    ],
+    "summary": "Get payment operations",
+    "description": "Get a list of payment operations sorted by completion date (most recent first)",
+    "operationId": "getOperations",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     },
+     {
+      "name": "completed.gte",
+      "in": "query",
+      "description": "Return only operations completed at or after the specified time. Default is beginning of the current day.",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2025-10-12T10:26:18"
+      }
+     },
+     {
+      "name": "completed.lt",
+      "in": "query",
+      "description": "If passed, return only operations completed strictly before the specified time",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+       "example": "2025-10-13T10:39:34"
+      }
+     },
+     {
+      "name": "operation.in",
+      "in": "query",
+      "description": "Comma-separated list of operations",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "example": "CREATE_PAYMENT,CHECKOUT,CANCEL"
+      }
+     },
+     {
+      "name": "paymentState.in",
+      "in": "query",
+      "description": "Comma-separated list of payment states after operation completion",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "example": "CHECKOUT,COMPLETED,DECLINED"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Operation List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OperationListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/counterparties": {
+   "get": {
+    "tags": [
+     "Counterparties"
+    ],
+    "summary": "Get counterparties",
+    "description": "Get all counterparties",
+    "operationId": "getCounterparties",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Get Counterparties Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CounterpartiesListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/shops": {
+   "get": {
+    "tags": [
+     "Shops"
+    ],
+    "summary": "Get merchants shops",
+    "description": "Get all merchants shops",
+    "operationId": "getShops",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Get Shops Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ShopsListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/terminals/{terminalId}/balance": {
+   "get": {
+    "tags": [
+     "Terminals"
+    ],
+    "summary": "Get terminal balance",
+    "description": "Get terminal balance by terminal Id",
+    "operationId": "getTerminalBalance",
+    "parameters": [
+     {
+      "name": "terminalId",
+      "in": "path",
+      "description": "Terminal Id",
+      "required": true,
+      "schema": {
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Balance Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TerminalBalanceResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/terminals": {
+   "get": {
+    "tags": [
+     "Terminals"
+    ],
+    "summary": "Get merchants terminals",
+    "description": "Get all merchant terminals",
+    "operationId": "getTerminals",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Get Terminals Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TerminalsListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/balances": {
+   "get": {
+    "tags": [
+     "Balances"
+    ],
+    "summary": "Get balances",
+    "description": "Get a list of all merchant balances in the Financial Module. For more detailed information, please contact our support team.",
+    "operationId": "getBalances",
+    "responses": {
+     "200": {
+      "description": "Balance List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BalanceListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/available-withdrawal-balances": {
+   "get": {
+    "tags": [
+     "Balances"
+    ],
+    "summary": "Get balances available for withdrawals via the gateway API",
+    "description": "Get balances available for withdrawals via the gateway API. See the \"Check Withdrawal Balance\" section in the shop settings.",
+    "operationId": "getAvailableWithdrawalBalances",
+    "responses": {
+     "200": {
+      "description": "Available Withdrawal Balances List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AvailableWithdrawalBalancesListResponse"
+        }
+       }
+      }
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/bins": {
+   "get": {
+    "tags": [
+     "BINs"
+    ],
+    "summary": "Get BINs",
+    "description": "Get a paginated list of BINs",
+    "operationId": "getBins",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "BIN List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BinListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/bin-groups": {
+   "get": {
+    "tags": [
+     "BINs"
+    ],
+    "summary": "Get BIN groups",
+    "description": "Get a paginated list of BIN groups",
+    "operationId": "getBinGroups",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "BIN Group List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BinGroupListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/bin-groups/{groupId}": {
+   "get": {
+    "tags": [
+     "BINs"
+    ],
+    "summary": "Get BINs from a BIN group",
+    "description": "Get a paginated list of BINs belonging to the specified BIN group",
+    "operationId": "getBinsFromGroup",
+    "parameters": [
+     {
+      "name": "groupId",
+      "in": "path",
+      "description": "BIN Group Id",
+      "required": true,
+      "schema": {
+       "type": "integer"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "BIN Group Items Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BinGroupItemsResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/customers": {
+   "get": {
+    "tags": [
+     "Customers"
+    ],
+    "summary": "Get customers",
+    "description": "Get a paginated list of customers.",
+    "operationId": "getCustomers",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Customer List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CustomerListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/shop-groups": {
+   "get": {
+    "tags": [
+     "Shops"
+    ],
+    "summary": "Get shop groups",
+    "description": "Get a paginated list of shop groups.",
+    "operationId": "getShopGroups",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Shop Group List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ShopGroupListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/email-groups": {
+   "get": {
+    "tags": [
+     "Emails"
+    ],
+    "summary": "Get email groups",
+    "description": "Get a paginated list of email groups",
+    "operationId": "getEmailGroups",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Email Group List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EmailGroupListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/email-groups/{groupId}": {
+   "get": {
+    "tags": [
+     "Emails"
+    ],
+    "summary": "Get emails from an email group",
+    "description": "Get a paginated list of email addresses belonging to the specified email group",
+    "operationId": "getEmailsFromGroup",
+    "parameters": [
+     {
+      "name": "groupId",
+      "in": "path",
+      "description": "Email Group Id",
+      "required": true,
+      "schema": {
+       "type": "integer"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Email Group Items Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EmailGroupItemsResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/email-groups/{groupId}/emails": {
+   "post": {
+    "tags": [
+     "Emails"
+    ],
+    "summary": "Add emails to an email group",
+    "description": "Add one or more email addresses to the specified email group. Requires \"Edit Shops\" permission.",
+    "operationId": "addEmailsToGroup",
+    "parameters": [
+     {
+      "name": "groupId",
+      "in": "path",
+      "description": "Email Group Id",
+      "required": true,
+      "schema": {
+       "type": "integer"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AddEmailsToGroupRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Emails added successfully"
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/card-groups": {
+   "get": {
+    "tags": [
+     "Cards"
+    ],
+    "summary": "Get card groups",
+    "description": "Get a paginated list of card groups",
+    "operationId": "getCardGroups",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Card Group List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CardGroupListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/card-groups/{groupId}": {
+   "get": {
+    "tags": [
+     "Cards"
+    ],
+    "summary": "Get cards from a card group",
+    "description": "Get a paginated list of masked card PANs belonging to the specified card group",
+    "operationId": "getCardsFromGroup",
+    "parameters": [
+     {
+      "name": "groupId",
+      "in": "path",
+      "description": "Card Group Id",
+      "required": true,
+      "schema": {
+       "type": "integer"
+      }
+     },
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Card Group Items Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CardGroupItemsResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/card-groups/{groupId}/cards": {
+   "post": {
+    "tags": [
+     "Cards"
+    ],
+    "summary": "Add cards to a card group",
+    "description": "Add one or more card numbers to the specified card group. Requires \"Edit Shops\" permission. For masked card groups, card numbers must contain at least the first 6 and last 4 digits.",
+    "operationId": "addCardsToGroup",
+    "parameters": [
+     {
+      "name": "groupId",
+      "in": "path",
+      "description": "Card Group Id",
+      "required": true,
+      "schema": {
+       "type": "integer"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AddCardsToGroupRequest"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Cards added successfully"
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     },
+     "404": {
+      "$ref": "#/components/responses/NotFound"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/country-groups": {
+   "get": {
+    "tags": [
+     "Countries"
+    ],
+    "summary": "Get country groups",
+    "description": "Get a paginated list of country groups",
+    "operationId": "getCountryGroups",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Country Group List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CountryGroupListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/connectors": {
+   "get": {
+    "tags": [
+     "Connectors"
+    ],
+    "summary": "Get connectors",
+    "description": "Get a paginated list of shop connectors",
+    "operationId": "getConnectors",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Connector List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ConnectorListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/antifraud-profiles": {
+   "get": {
+    "tags": [
+     "Anti-Fraud"
+    ],
+    "summary": "Get anti-fraud profiles",
+    "description": "Get a paginated list of anti-fraud profiles",
+    "operationId": "getAntiFraudProfiles",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Anti-Fraud Profile List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AntiFraudProfileListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/currency-rates": {
+   "get": {
+    "tags": [
+     "Currency Rates"
+    ],
+    "summary": "Get currency rates",
+    "description": "Get a paginated list of currency exchange rates",
+    "operationId": "getCurrencyRates",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Currency Rate List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CurrencyRateListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/bank-codes": {
+   "get": {
+    "tags": [
+     "Bank Codes"
+    ],
+    "summary": "Get bank codes",
+    "description": "Get a paginated list of bank codes",
+    "operationId": "getBankCodes",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Bank Code List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BankCodeListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/bank-code-mappings": {
+   "get": {
+    "tags": [
+     "Bank Codes"
+    ],
+    "summary": "Get bank code mappings",
+    "description": "Get a paginated list of bank code mappings",
+    "operationId": "getBankCodeMappings",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Bank Code Mapping List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BankCodeMappingListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  },
+  "/merchant-api/v1/error-code-groups": {
+   "get": {
+    "tags": [
+     "Error Code Groups"
+    ],
+    "summary": "Get error code groups",
+    "description": "Get a paginated list of error code groups",
+    "operationId": "getErrorCodeGroups",
+    "parameters": [
+     {
+      "name": "offset",
+      "in": "query",
+      "description": "The number of items to skip before starting to collect the result set. Default is 0.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 1000000
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "description": "The numbers of items to return. Default is 50.",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "maximum": 10000
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Error Code Group List Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ErrorCodeGroupListResponse"
+        }
+       }
+      }
+     },
+     "400": {
+      "$ref": "#/components/responses/BadRequest"
+     },
+     "401": {
+      "$ref": "#/components/responses/Unauthorized"
+     },
+     "403": {
+      "$ref": "#/components/responses/Forbidden"
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "CurrencyAmount": {
+    "required": [
+     "currency",
+     "amount"
+    ],
+    "description": "Currency and amount",
+    "type": "object",
+    "properties": {
+     "currency": {
+      "type": "string",
+      "description": "Currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "amount": {
+      "multipleOf": 1e-18,
+      "maximum": 1000000000,
+      "minimum": 1e-05,
+      "type": "number",
+      "description": "Amount in the specified currency",
+      "example": 11.12
+     }
+    }
+   },
+   "Operation": {
+    "type": "string",
+    "description": "Payment operation type",
+    "example": "CREATE_PAYMENT",
+    "enum": [
+     "CREATE_PAYMENT",
+     "CHECKOUT",
+     "CANCEL",
+     "CONFIRMATION",
+     "CASCADING",
+     "REDIRECT",
+     "CONTINUE",
+     "CONTINUE_PRE_PROCESSING",
+     "DETECT_FRAUD",
+     "PRE_PROCESSING",
+     "DEPOSIT",
+     "WITHDRAWAL",
+     "REFUND",
+     "CHARGEBACK",
+     "CHECK_STATE",
+     "TRIGGER_WEBHOOK",
+     "HANDLE_WEBHOOK",
+     "CAPTURE",
+     "VOID",
+     "APPROVE",
+     "REJECT",
+     "UPLOAD_FILE",
+     "MANUAL_UPDATE",
+     "MANUAL_CHECK_STATE"
+    ]
+   },
+   "PaymentState": {
+    "type": "string",
+    "description": "Payment State",
+    "example": "PENDING",
+    "enum": [
+     "CHECKOUT",
+     "AWAITING_APPROVAL",
+     "FRAUD_DETECTION",
+     "PRE_PROCESSING",
+     "PENDING",
+     "INPUT_REQUIRED",
+     "AWAITING_CONFIRMATION",
+     "CASCADING_CONFIRMATION",
+     "CASCADING_CONTINUE",
+     "AWAITING_REDIRECT",
+     "AWAITING_RETURN",
+     "AWAITING_PRE_PROCESSING_RETURN",
+     "RECONCILIATION",
+     "AWAITING_WEBHOOK",
+     "ERROR",
+     "OPENED",
+     "AUTHORIZED",
+     "CANCELLED",
+     "DECLINED",
+     "COMPLETED"
+    ]
+   },
+   "PaymentType": {
+    "type": "string",
+    "description": "Payment Type",
+    "example": "DEPOSIT",
+    "enum": [
+     "DEPOSIT",
+     "WITHDRAWAL",
+     "REFUND",
+     "CHARGEBACK"
+    ]
+   },
+   "PaymentMethod": {
+    "type": "string",
+    "description": "Payment Method",
+    "example": "BASIC_CARD",
+    "enum": [
+     "ABSA_PAY",
+     "ACH",
+     "AHLPAY",
+     "ALFAKIT",
+     "ALFAMART",
+     "ALIPAY",
+     "ALYCEPAY",
+     "APPLEPAY",
+     "ARI10",
+     "ASTROPAY",
+     "B2BINPAY",
+     "BANCOMAT",
+     "BANCONTACT",
+     "BANKTRANSFER",
+     "BANKTRANSFER_AR",
+     "BANKTRANSFER_BO",
+     "BANKTRANSFER_BR",
+     "BANKTRANSFER_CL",
+     "BANKTRANSFER_CO",
+     "BANKTRANSFER_CR",
+     "BANKTRANSFER_EC",
+     "BANKTRANSFER_GT",
+     "BANKTRANSFER_HN",
+     "BANKTRANSFER_MX",
+     "BANKTRANSFER_PA",
+     "BANKTRANSFER_PE",
+     "BANKTRANSFER_TR",
+     "BANKTRANSFER_UY",
+     "BANKTRANSFER_VE",
+     "BASIC_CARD",
+     "BASIC_CARD_HPP",
+     "BCI",
+     "BILLLINE",
+     "BINANCE_PAY",
+     "BIOPAGO",
+     "BIZUM",
+     "BKASH",
+     "BLIK",
+     "BLUVOUCHER",
+     "BOLETO",
+     "BOOST",
+     "BREB",
+     "BRITE",
+     "BYBIT_PAY",
+     "CAPITEC_PAY",
+     "CASH",
+     "CASHAPP",
+     "CASH_EC",
+     "CASHLIB",
+     "CHEK",
+     "CIP",
+     "CLICK",
+     "CODI",
+     "CRYPTO",
+     "CUP",
+     "DANA",
+     "DPOPAY",
+     "DRAGON_PAY",
+     "DUITNOW",
+     "EASYPAISA",
+     "ECNY",
+     "EFECTY",
+     "EFT",
+     "EMANAT",
+     "ENAIRA",
+     "EPAY_BG",
+     "EPS",
+     "ETISALAT_EG",
+     "EZYCASH",
+     "ESEWA",
+     "EUPAGO",
+     "EXTERNAL_HPP",
+     "FAWRY",
+     "FINRAX",
+     "FLEXEPIN",
+     "FONEPAY",
+     "FPS",
+     "FPS_HK",
+     "FPX",
+     "FUPS",
+     "GATE8TRANSACT",
+     "GATEIQ",
+     "GCASH",
+     "GIFTCARD",
+     "GIFTCARD_CARD",
+     "GIFTCARD_OPENBANKING",
+     "GIFTCARD_PAYPAL",
+     "GIFTCARD_PM",
+     "GIROPAY",
+     "GOOGLEPAY",
+     "GOPAY",
+     "GPAY_IN",
+     "GRABPAY",
+     "HAVALE",
+     "HAYDIPAY",
+     "HAYHAY",
+     "HELP2PAY",
+     "HITES",
+     "IDEAL",
+     "IMEPAY",
+     "IMPS",
+     "INAI",
+     "INRPAY",
+     "INTENT",
+     "INTERAC",
+     "INTERAC_ACH",
+     "INTERAC_ETO",
+     "INTERAC_EXPRESS",
+     "INTERAC_REQUEST_MONEY",
+     "INTERAC_RTO",
+     "JAZZCASH",
+     "JETONCASH",
+     "JETONWALLET",
+     "KAKAOPAY",
+     "KBZ",
+     "KESSPAY",
+     "KHALTI",
+     "KHIPU",
+     "KLAP_EFECTIVO",
+     "KLAP_TRANSFERENCIA",
+     "KLARNA",
+     "LOCALPAYMENT",
+     "M10",
+     "MACH",
+     "MACROPAY",
+     "MBWAY",
+     "MEFETE",
+     "MERCADOPAGO",
+     "MIA",
+     "MIFINITY",
+     "MISTERCASH",
+     "MOBILE_BANKING_CN",
+     "MOBILE_COMMERCE",
+     "MOBILE_MONEY",
+     "MOLLIE",
+     "MOMOPAY_RW",
+     "MOMOPAY_VN",
+     "MONERCHY",
+     "MONETIX",
+     "MONEYTOLIA",
+     "MONNET",
+     "MONOOVA_ACCOUNT_TRANSFER",
+     "MONOOVA_WALLET_TRANSFER",
+     "MPAY",
+     "MPESA",
+     "MUCHBETTER",
+     "MULTIBANCO",
+     "MYBANK",
+     "MYPAYZ",
+     "N26",
+     "NAGAD",
+     "NAVERPAY",
+     "NEFT",
+     "NEOSURF",
+     "NEQUI",
+     "NETBANKING",
+     "NETELLER",
+     "NGENIUS",
+     "NODA",
+     "NODA_REVOLUT",
+     "NUMICARD",
+     "NUMICARD_CARD",
+     "NUMICARD_OPENBANKING",
+     "NUMICARD_PAYPAL",
+     "OFFLINE_UPI",
+     "OMNIMATRIX",
+     "ONEVOUCHER",
+     "ONLINE_BANKING",
+     "OPAY",
+     "OPEN_BANKING",
+     "OPENPAYD",
+     "OPTIMONEY",
+     "OTTVOUCHER",
+     "OVO",
+     "OXXO",
+     "P24",
+     "P2C",
+     "P2P_ACCESS",
+     "P2P_ALFABANK",
+     "P2P_CARD",
+     "P2P_CARD_ABH",
+     "P2P_CARD_CLICK",
+     "P2P_CARD_HUMO",
+     "P2P_CARD_PAYME",
+     "P2P_CARD_UZCARD",
+     "P2P_CROSS_BORDER",
+     "P2P_CROSS_BORDER_ALFABANK",
+     "P2P_CROSS_BORDER_GAZPROMBANK",
+     "P2P_CROSS_BORDER_SBER",
+     "P2P_CROSS_BORDER_TBANK",
+     "P2P_CROSS_BORDER_VTB",
+     "P2P_ELCART",
+     "P2P_EMANAT",
+     "P2P_GAZPROMBANK",
+     "P2P_IBAN",
+     "P2P_INSTAPAY_EG",
+     "P2P_INTERAC_ETO",
+     "P2P_KAPITAL",
+     "P2P_M10",
+     "P2P_MBANK_KG",
+     "P2P_MOBILE",
+     "P2P_MOBILE_PAYME",
+     "P2P_MOBILE_TOP_UP",
+     "P2P_OZONBANK",
+     "P2P_PSB",
+     "P2P_QR_CLICK",
+     "P2P_QR_PAY",
+     "P2P_SBERBANK",
+     "P2P_SBP",
+     "P2P_TBANK",
+     "P2P_UPI",
+     "P2P_VTB",
+     "PAGO_MOVIL",
+     "PAGO_MOVIL_INST",
+     "PAGO46",
+     "PAGOEFECTIVO",
+     "PAGOFACIL",
+     "PAGSMILE_VAULT",
+     "PALMPAY",
+     "PAPARA",
+     "PAPEL",
+     "PARAM",
+     "PARATIM",
+     "PARAZULA",
+     "PAROLAPARA",
+     "PAY2PLAY",
+     "PAYBOL",
+     "PAY_BY_LINK",
+     "PAY_ME",
+     "PAYCASH",
+     "PAYCELL",
+     "PAYCO_KR",
+     "PAYCO_TR",
+     "PAYDO_WALLET",
+     "PAYFIX",
+     "PAYFUN",
+     "PAYID",
+     "PAYMAXIS",
+     "PAYMAYA",
+     "PAYME_UZ",
+     "PAYNOW",
+     "PAYOUT_NONSEPA_REQUEST",
+     "PAYOUT_SEPA_BATCH",
+     "PAYPAL",
+     "PAYPAY",
+     "PAYPO",
+     "PAYPORT",
+     "PAYRETAILERS",
+     "PAYSAFECARD",
+     "PAYSAFECASH",
+     "PAYSHOP",
+     "PAYTM",
+     "PAYTO",
+     "PAYU",
+     "PEC",
+     "PEP",
+     "PERFECTMONEY",
+     "PG_PARA",
+     "PHONEPE",
+     "PIASTRIX",
+     "PICPAY",
+     "PIX",
+     "POLI",
+     "POPY",
+     "POPY_PARA",
+     "PREPAID_CARD",
+     "PROMPTPAY",
+     "PSE",
+     "PUNTOPAGO",
+     "PUSH",
+     "QR",
+     "QR_ELCART",
+     "QR_INSTAPAY_EG",
+     "QR_MBANK_KG",
+     "QRIS",
+     "RAPIDTRANSFER",
+     "RAPIPAGO",
+     "REVOLUT",
+     "ROCKET",
+     "RTP",
+     "RTGS",
+     "RUBPAY",
+     "SATISPAY",
+     "SBERPAY",
+     "SBP",
+     "SBP_CROSS_BORDER",
+     "SEPA",
+     "SERVIFACIL",
+     "SHOPEEPAY",
+     "SIPAY",
+     "SKRILL",
+     "SOFORT",
+     "SOFT2PAY",
+     "SPEI",
+     "SPOYNT",
+     "STICPAY",
+     "SUPERMARKET_CODE_PAY",
+     "SWISH",
+     "TED",
+     "TINK",
+     "TOSLA",
+     "TOSSPAY",
+     "TOUCH_N_GO",
+     "TRANSFIYA",
+     "TRUEMONEY",
+     "TRUSTLY",
+     "TRUSTPAYMENTS",
+     "TWINT",
+     "UNIONPAY_TRANSFER",
+     "UPI",
+     "USSD",
+     "VENMO",
+     "VIETTEL",
+     "VIRTUAL_ACCOUNT",
+     "VNPAY_QR",
+     "VODAFONE_EG",
+     "VOLT",
+     "VOUCHERCARD",
+     "VOUCHERCARD_CARD",
+     "VOUCHERCARD_OPENBANKING",
+     "VOUCHERCARD_PAYPAL",
+     "VOUCHERCARD_PM",
+     "VOUCHERRY",
+     "VOUCHSTAR",
+     "WAVE",
+     "WECHAT",
+     "WEBPAY",
+     "WISE",
+     "XANPAY",
+     "XINPAY",
+     "YAPE",
+     "YAPILY",
+     "ZALO",
+     "ZELLE",
+     "ZIMPLER",
+     "ZIPAY",
+     "ZOTAPAY"
+    ]
+   },
+   "PaymentOperation": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Operation Id"
+     },
+     "paymentId": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Payment Id",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "operation": {
+      "$ref": "#/components/schemas/Operation"
+     },
+     "paymentState": {
+      "$ref": "#/components/schemas/PaymentState"
+     },
+     "started": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Operation start time, in UTC time zone",
+      "example": "2025-10-25T10:12:12"
+     },
+     "completed": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Operation completion time, in UTC time zone",
+      "example": "2025-10-25T10:12:13"
+     },
+     "rawPaymentData": {
+      "type": "string",
+      "description": "Update applied to the Payments table after the operation"
+     },
+     "terminalId": {
+      "type": "integer",
+      "description": "ID of the terminal associated with the operation"
+     },
+     "terminalName": {
+      "type": "string",
+      "description": "Name of the terminal associated with the operation"
+     },
+     "paymentCreated": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when this payment was created, in UTC time zone",
+      "example": "2025-10-25T10:11:12"
+     },
+     "paymentType": {
+      "$ref": "#/components/schemas/PaymentType"
+     },
+     "paymentMethod": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "paymentDescription": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description of the payment",
+      "example": "Deposit via TEST shop"
+     },
+     "paymentReferenceId": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "referenceId from payment request",
+      "example": "payment-123"
+     },
+     "paymentAmount": {
+      "type": "number",
+      "description": "The current payment amount. May differ from the amount at the time of the operation.",
+      "example": 11.12
+     },
+     "paymentCurrency": {
+      "type": "string",
+      "description": "The current payment currency. May differ from the currency at the time of the operation.",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "paymentBaseAmount": {
+      "type": "number",
+      "description": "The current payment amount  in system base currency. May differ from the amount at the time of the operation.",
+      "example": 15
+     },
+     "parentPaymentId": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Parent payment Id. For refunds, contains the initial deposit Id. For cascading attempts, contains the initial payment Id.",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id"
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant name"
+     },
+     "shopId": {
+      "type": "integer",
+      "description": "Shop Id"
+     },
+     "shopName": {
+      "type": "string",
+      "description": "Shop name"
+     },
+     "providerId": {
+      "type": "integer",
+      "description": "Provider Id"
+     },
+     "providerName": {
+      "type": "string",
+      "description": "Provider name"
+     },
+     "errorCode": {
+      "type": "string",
+      "description": "Check 'Error Codes' table in Gateway section for details",
+      "example": "4.01 Insufficient Funds"
+     },
+     "externalResultCode": {
+      "type": "string",
+      "description": "Result code from provider",
+      "example": "42"
+     },
+     "externalId": {
+      "type": "string",
+      "description": "Payment Id on provider side"
+     }
+    }
+   },
+   "Payment": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Payment Id",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "created": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when this payment was created, in UTC time zone",
+      "example": "2025-10-25T10:11:12"
+     },
+     "updated": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when this payment was last updated, in UTC time zone",
+      "example": "2025-10-25T10:12:12"
+     },
+     "state": {
+      "$ref": "#/components/schemas/PaymentState"
+     },
+     "errorCode": {
+      "type": "string",
+      "description": "Check 'Error Codes' table in Gateway section for details",
+      "example": "4.01 Insufficient Funds"
+     },
+     "type": {
+      "$ref": "#/components/schemas/PaymentType"
+     },
+     "method": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "description": {
+      "maxLength": 512,
+      "type": "string",
+      "description": "Description of the payment",
+      "example": "Deposit via TEST shop"
+     },
+     "referenceId": {
+      "maxLength": 256,
+      "type": "string",
+      "description": "referenceId from payment request",
+      "example": "payment-123"
+     },
+     "parentPaymentId": {
+      "maxLength": 32,
+      "type": "string",
+      "description": "Parent payment Id. For refunds, contains the initial deposit Id. For cascading attempts, contains the initial payment Id.",
+      "example": "91d27876e87f4b22b3ecd53924bf973d"
+     },
+     "startRecurring": {
+      "type": "boolean",
+      "description": "Indicates whether this payment has started a recurring chain"
+     },
+     "recurringToken": {
+      "type": "string",
+      "description": "Token that was used to continue the recurring chain"
+     },
+     "preAuth": {
+      "type": "boolean",
+      "description": "Indicates whether this was a 2-phase deposit"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id"
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant name"
+     },
+     "shopId": {
+      "type": "integer",
+      "description": "Shop Id"
+     },
+     "shopName": {
+      "type": "string",
+      "description": "Shop name"
+     },
+     "providerId": {
+      "type": "integer",
+      "description": "Provider Id"
+     },
+     "providerName": {
+      "type": "string",
+      "description": "Provider name"
+     },
+     "terminalId": {
+      "type": "integer",
+      "description": "Terminal Id"
+     },
+     "terminalName": {
+      "type": "string",
+      "description": "Terminal name"
+     },
+     "externalId": {
+      "type": "string",
+      "description": "Payment Id on provider side"
+     },
+     "externalResultCode": {
+      "type": "string",
+      "description": "Result code from provider",
+      "example": "42"
+     },
+     "amount": {
+      "type": "number",
+      "description": "Amount paid by customer",
+      "example": 11.12
+     },
+     "refundedAmount": {
+      "type": "number",
+      "description": "Amount of completed refunds for deposit",
+      "example": 11.12
+     },
+     "currency": {
+      "type": "string",
+      "description": "Currency sent to payment provider",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "baseAmount": {
+      "type": "number",
+      "description": "Amount in system base currency",
+      "example": 15
+     },
+     "customerAmount": {
+      "type": "number",
+      "description": "Amount from payment request. Filled only if the request currency differs from the currency sent to the payment provider.",
+      "example": 15
+     },
+     "customerCurrency": {
+      "type": "string",
+      "description": "Currency from payment request. Filled only if it differs from the currency sent to the payment provider.",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     },
+     "shopBaseAmount": {
+      "type": "number",
+      "description": "Amount in shop base currency",
+      "example": 15
+     },
+     "shopBaseCurrency": {
+      "type": "string",
+      "description": "Shop base currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     },
+     "customerReferenceId": {
+      "type": "string",
+      "description": "Id of the customer assigned by Merchant",
+      "example": "customer_123"
+     },
+     "customerAccountNumber": {
+      "type": "string",
+      "description": "Customer account number. Masked PAN for BASIC_CARD method"
+     },
+     "customerBank": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank name"
+     },
+     "customerBankBranch": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank branch name"
+     },
+     "customerBankCode": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank code. 8-digit BIN for BASIC_CARD method"
+     },
+     "customerBankBranchCode": {
+      "maxLength": 64,
+      "type": "string",
+      "description": "Customer bank branch code"
+     },
+     "customerCitizenshipCountryCode": {
+      "type": "string",
+      "description": "Customer country of citizenship",
+      "example": "AU"
+     },
+     "customerFirstName": {
+      "type": "string",
+      "example": "John"
+     },
+     "customerLastName": {
+      "type": "string",
+      "example": "Smith"
+     },
+     "customerDateOfBirth": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "example": "2001-12-03"
+     },
+     "customerEmail": {
+      "type": "string",
+      "description": "Email address of the customer",
+      "format": "email",
+      "example": "my@email.com"
+     },
+     "customerPhone": {
+      "type": "string",
+      "description": "International phone number of the customer, without the '+'. Use a space as a separator between the dialing country code and local phone number.",
+      "example": "357 123123123"
+     },
+     "customerRoutingGroup": {
+      "type": "string",
+      "description": "VIP",
+      "example": "John"
+     },
+     "customerIp": {
+      "type": "string",
+      "description": "Customer IP address",
+      "example": "127.0.0.1"
+     },
+     "customerIpCountryCode": {
+      "type": "string",
+      "description": "Customer IP country code",
+      "example": "CY"
+     },
+     "billingCountryCode": {
+      "type": "string",
+      "description": "2-character IS0-3166-1 country code",
+      "example": "CY"
+     },
+     "billingPostalCode": {
+      "type": "string",
+      "description": "Postal code",
+      "example": "4141"
+     },
+     "billingCity": {
+      "type": "string",
+      "description": "City name",
+      "example": "Limassol"
+     },
+     "billingState": {
+      "type": "string",
+      "description": "State code",
+      "example": "CA"
+     },
+     "billingAddressLine1": {
+      "type": "string",
+      "description": "Line 1 of the address (e.g., Number, street, etc)",
+      "example": "7, Sunny street"
+     },
+     "billingAddressLine2": {
+      "type": "string",
+      "description": "Line 2 of the address (e.g., Suite, apt)",
+      "example": "Office 3"
+     },
+     "cardholderName": {
+      "type": "string",
+      "description": "Cardholder's name printed on the card",
+      "example": "John Smith"
+     },
+     "cardBrand": {
+      "type": "string",
+      "description": "Card brand",
+      "example": "VISA"
+     },
+     "cardType": {
+      "type": "string",
+      "description": "Card brand",
+      "example": "CREDIT"
+     },
+     "cardCountryCode": {
+      "type": "string",
+      "description": "2-character IS0-3166-1 country code",
+      "example": "CY"
+     },
+     "cardIssuingOrganization": {
+      "type": "string",
+      "description": "Card issuing organization",
+      "example": "BANK OF CYPRUS PUBLIC COMPANY LIMITED"
+     }
+    }
+   },
+   "Balance": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Balance Id",
+      "example": 123
+     },
+     "accountType": {
+      "type": "string",
+      "description": "Account type",
+      "example": "PROCESSING",
+      "enum": [
+       "PROCESSING",
+       "AVAILABLE",
+       "WITHDRAWAL",
+       "CUSTOM"
+      ]
+     },
+     "name": {
+      "type": "string",
+      "description": "Account name",
+      "example": "Processing Balance(EUR) of shop \"my-shop\""
+     },
+     "currency": {
+      "type": "string",
+      "description": "Currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "amount": {
+      "type": "number",
+      "description": "Current account balance amount",
+      "example": 1020.12
+     }
+    }
+   },
+   "AvailableWithdrawalBalances": {
+    "type": "object",
+    "properties": {
+     "shopId": {
+      "type": "integer",
+      "description": "Shop Id",
+      "example": 1381
+     },
+     "shopName": {
+      "type": "string",
+      "description": "Shop Name",
+      "example": "Best Shop"
+     },
+     "terminalId": {
+      "type": "integer",
+      "description": "Terminal Id. **Present only with View Terminal Permission**",
+      "example": 11126
+     },
+     "terminalName": {
+      "type": "string",
+      "description": "Terminal Name. **Present only with View Terminal Permission**",
+      "example": "Best Terminal"
+     },
+     "currency": {
+      "type": "string",
+      "description": "Currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "amount": {
+      "type": "number",
+      "description": "Amount",
+      "example": 500.25
+     }
+    }
+   },
+   "Counterparty": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Counterparty Id",
+      "example": 111
+     },
+     "name": {
+      "type": "string",
+      "description": "Counterparty Name",
+      "example": "Best Counterparty"
+     },
+     "affiliateId": {
+      "type": "string",
+      "description": "Affiliate Id",
+      "example": "d941c1d7805530"
+     },
+     "affiliateName": {
+      "type": "string",
+      "description": "Affiliate Name",
+      "example": "SomeName"
+     },
+     "uniqueCode": {
+      "type": "string",
+      "description": "Unique Code",
+      "example": "c1d7"
+     },
+     "registrationDate": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "example": "2025-11-17"
+     },
+     "createdAt": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "example": "2025-11-17T12:12:12"
+     },
+     "counterpartyTypes": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "MERCHANT",
+       "PROVIDER"
+      ]
+     }
+    }
+   },
+   "Shop": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Shop Id",
+      "example": 111
+     },
+     "name": {
+      "type": "string",
+      "description": "Shop Name",
+      "example": "Best Shop"
+     },
+     "state": {
+      "type": "string",
+      "description": "Shop state",
+      "example": "ACTIVE",
+      "enum": [
+       "ACTIVE",
+       "INACTIVE"
+      ]
+     },
+     "displayName": {
+      "type": "string",
+      "description": "Shops display name",
+      "example": "Best Shop"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     },
+     "introducerId": {
+      "type": "string",
+      "description": "Introducer Id",
+      "example": 12345
+     },
+     "introducerName": {
+      "type": "string",
+      "description": "Introducer Name",
+      "example": "Mr. John"
+     },
+     "countryCode": {
+      "type": "string",
+      "maxLength": 2,
+      "minLength": 2,
+      "pattern": "[A-Z]{2}",
+      "description": "2-character IS0-3166-1 country code",
+      "example": "US"
+     },
+     "shopUrl": {
+      "type": "string",
+      "description": "Shop Url",
+      "example": "https://best-shop-every.bestshop"
+     },
+     "webhookUrl": {
+      "type": "string",
+      "description": "Webhook url",
+      "example": "https://best-shop-every.bestshop/webhooks/tid/111"
+     },
+     "returnUrl": {
+      "type": "string",
+      "description": "Return Url",
+      "example": "https://best-shop-every.bestshop"
+     },
+     "checkoutUrl": {
+      "type": "string",
+      "description": "Checkout url of the Shop",
+      "example": "https://best-shop-every.bestshop/checkout"
+     },
+     "alternativeReturnUrl": {
+      "type": "string",
+      "description": "When a user submits a checkout page, we store the IP address. If the user's IP address has changed before returning them to the merchant's website, we use an alternative return URL.",
+      "example": "https://super-shop.bestshop"
+     },
+     "baseCurrency": {
+      "type": "string",
+      "description": "Base currency"
+     },
+     "checkoutTimeout": {
+      "type": "integer",
+      "description": "Checkout timeout",
+      "maxLength": 1440,
+      "example": 60
+     },
+     "cascadingConfirmationTimeout": {
+      "type": "integer",
+      "description": "How long to wait for customer confirmation after a failed deposit attempt before using the next cascading option.",
+      "sample": 5
+     },
+     "resultPageRedirectTimeout": {
+      "type": "integer",
+      "description": "Indicates how much time in seconds the customer will stay on the final result page.",
+      "example": 5
+     },
+     "antiFraudProfileId": {
+      "type": "integer",
+      "description": "Anti Fraud Profile Id",
+      "example": 100
+     },
+     "checkoutThemeCode": {
+      "type": "string",
+      "description": "Checkout Theme Code"
+     },
+     "postProcessors": {
+      "type": "array",
+      "items": {
+       "type": "integer"
+      }
+     },
+     "preProcessors": {
+      "type": "array",
+      "items": {
+       "type": "integer"
+      }
+     },
+     "routingStrategy": {
+      "type": "string",
+      "description": "Routing strategy used in the shop"
+     },
+     "depositRequiredParameters": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "customerFirstName",
+       "customerLastName",
+       "customerEmail",
+       "customerPhone",
+       "customerDateOfBirth",
+       "billingAddress"
+      ]
+     },
+     "shopGroups": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "createdAt": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "example": "2025-11-17T12:12:12"
+     }
+    }
+   },
+   "Terminal": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Terminal Id",
+      "example": 111
+     },
+     "name": {
+      "type": "string",
+      "description": "Terminal Name",
+      "example": "Basic Card Terminal"
+     },
+     "state": {
+      "type": "string",
+      "description": "The Terminal State",
+      "example": "Basic Card Terminal",
+      "enum": [
+       "ACTIVE",
+       "APPROVING",
+       "DISABLED"
+      ]
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 2281
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     },
+     "providerId": {
+      "type": "integer",
+      "description": "Provider Id",
+      "example": 345
+     },
+     "providerName": {
+      "type": "string",
+      "description": "Provider Name",
+      "example": "Best Provider"
+     },
+     "apiCode": {
+      "type": "string",
+      "description": "Api Code",
+      "example": "ApiCode"
+     },
+     "apiName": {
+      "type": "string",
+      "description": "Api Name",
+      "example": "ApiName"
+     },
+     "createdAt": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "example": "2025-11-17T12:12:12"
+     },
+     "apiTypes": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "PSP",
+       "BANKING",
+       "COMPLIANCE",
+       "PRE_PROCESSOR",
+       "POST_PROCESSOR"
+      ]
+     }
+    }
+   },
+   "BinDetails": {
+    "type": "object",
+    "properties": {
+     "bin": {
+      "type": "string",
+      "description": "BIN (Bank Identification Number)",
+      "example": "411111"
+     },
+     "cardBrand": {
+      "type": "string",
+      "description": "Card brand",
+      "example": "VISA"
+     },
+     "cardType": {
+      "type": "string",
+      "description": "Card type",
+      "example": "CREDIT"
+     },
+     "issuingCountryCode": {
+      "type": "string",
+      "description": "2-character ISO 3166-1 country code of the issuing country",
+      "example": "CY"
+     },
+     "issuingOrganization": {
+      "type": "string",
+      "description": "Card issuing organization",
+      "example": "BANK OF CYPRUS PUBLIC COMPANY LIMITED"
+     }
+    }
+   },
+   "BinGroup": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "BIN Group Id",
+      "example": 42
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     },
+     "groupName": {
+      "type": "string",
+      "description": "BIN Group Name",
+      "example": "My BIN Group"
+     }
+    }
+   },
+   "Customer": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Customer Id",
+      "example": 999
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     },
+     "shopId": {
+      "type": "integer",
+      "description": "Shop Id",
+      "example": 111
+     },
+     "shopName": {
+      "type": "string",
+      "description": "Shop Name",
+      "example": "Best Shop"
+     },
+     "referenceId": {
+      "type": "string",
+      "description": "Customer reference Id assigned by the merchant",
+      "example": "customer_123"
+     },
+     "firstName": {
+      "type": "string",
+      "description": "Customer first name",
+      "example": "John"
+     },
+     "lastName": {
+      "type": "string",
+      "description": "Customer last name",
+      "example": "Smith"
+     },
+     "email": {
+      "type": "string",
+      "description": "Email address of the customer. Returned only with View Customer Email permission.",
+      "format": "email",
+      "example": "my@email.com"
+     },
+     "phone": {
+      "type": "string",
+      "description": "International phone number of the customer, without the '+'. Use a space as a separator between the dialing country code and local phone number. Returned only with View Customer Phone permission.",
+      "example": "357 123123123"
+     },
+     "dateOfBirth": {
+      "type": "string",
+      "description": "Customer date of birth",
+      "format": "ISO 8601 (YYYY-MM-DD)",
+      "example": "2001-12-03"
+     },
+     "paymentInstruments": {
+      "type": "array",
+      "description": "Payment instruments used by the customer",
+      "items": {
+       "type": "object",
+       "properties": {
+        "paymentMethod": {
+         "type": "string",
+         "description": "Payment method",
+         "example": "BASIC_CARD"
+        },
+        "accountNumber": {
+         "type": "string",
+         "description": "Customer account number (masked PAN for BASIC_CARD)",
+         "example": "411111******1111"
+        },
+        "numberOfSuccessfulDeposits": {
+         "type": "integer",
+         "description": "Number of successful deposits made with this instrument",
+         "example": 5
+        }
+       }
+      }
+     },
+     "connectedCards": {
+      "type": "array",
+      "description": "Cards saved or connected to the customer's account",
+      "items": {
+       "type": "object",
+       "properties": {
+        "cardholderName": {
+         "type": "string",
+         "description": "Cardholder name printed on the card",
+         "example": "John Smith"
+        },
+        "pan": {
+         "type": "string",
+         "description": "Masked card PAN",
+         "example": "411111******1111"
+        },
+        "expiryDate": {
+         "type": "string",
+         "description": "Card expiry date",
+         "example": "12/26"
+        },
+        "updatedAt": {
+         "type": "string",
+         "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+         "description": "Date and time when the card was last updated, in UTC time zone",
+         "example": "2025-11-17T12:12:12"
+        },
+        "savedByCustomer": {
+         "type": "boolean",
+         "description": "Indicates whether the card was saved by the customer"
+        }
+       }
+      }
+     }
+    }
+   },
+   "ShopGroup": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Shop Group Id",
+      "example": 10
+     },
+     "name": {
+      "type": "string",
+      "description": "Shop Group Name",
+      "example": "My Shop Group"
+     },
+     "shops": {
+      "type": "array",
+      "description": "List of shops in the group",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "integer",
+         "description": "Shop Id",
+         "example": 111
+        },
+        "name": {
+         "type": "string",
+         "description": "Shop Name",
+         "example": "Best Shop"
+        }
+       }
+      }
+     }
+    }
+   },
+   "EmailGroup": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Email Group Id",
+      "example": 10
+     },
+     "name": {
+      "type": "string",
+      "description": "Email Group Name",
+      "example": "My Email Group"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     }
+    }
+   },
+   "CardGroup": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Card Group Id",
+      "example": 10
+     },
+     "name": {
+      "type": "string",
+      "description": "Card Group Name",
+      "example": "My Card Group"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     }
+    }
+   },
+   "CountryGroup": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Country Group Id",
+      "example": 10
+     },
+     "name": {
+      "type": "string",
+      "description": "Country Group Name",
+      "example": "My Country Group"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     },
+     "countries": {
+      "type": "array",
+      "description": "Set of 2-character ISO 3166-1 country codes",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "CY",
+       "US",
+       "GB"
+      ]
+     }
+    }
+   },
+   "Connector": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Connector Id"
+     },
+     "shopId": {
+      "type": "integer",
+      "description": "Shop Id"
+     },
+     "state": {
+      "type": "string",
+      "description": "Connector state",
+      "example": "ACTIVE"
+     },
+     "paymentMethod": {
+      "type": "string",
+      "description": "Payment method",
+      "example": "BASIC_CARD"
+     },
+     "terminalId": {
+      "type": "integer",
+      "description": "Terminal Id"
+     },
+     "priority": {
+      "type": "integer",
+      "description": "Routing priority"
+     },
+     "weight": {
+      "type": "integer",
+      "description": "Routing weight"
+     },
+     "terminalCurrency": {
+      "type": "string",
+      "description": "Terminal currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "dpMinCommission": {
+      "type": "number",
+      "description": "Minimum deposit commission amount"
+     },
+     "dpCommissionPercent": {
+      "type": "number",
+      "description": "Deposit commission percentage"
+     },
+     "dpAmountConfirmation": {
+      "type": "boolean",
+      "description": "Whether deposit amount confirmation is required"
+     },
+     "wdMinCommission": {
+      "type": "number",
+      "description": "Minimum withdrawal commission amount"
+     },
+     "wdCommissionPercent": {
+      "type": "number",
+      "description": "Withdrawal commission percentage"
+     },
+     "wdCommissionOnTop": {
+      "type": "boolean",
+      "description": "Whether withdrawal commission is added on top"
+     },
+     "cascadingErrorCodesWhitelistId": {
+      "type": "integer",
+      "description": "Error code group ID used as cascading whitelist"
+     },
+     "cascadingErrorCodesBlacklistId": {
+      "type": "integer",
+      "description": "Error code group ID used as cascading blacklist"
+     },
+     "filters": {
+      "type": "object",
+      "description": "Payment routing filters",
+      "properties": {
+       "amountOp": {
+        "type": "string",
+        "description": "Amount comparison operator",
+        "example": "BETWEEN"
+       },
+       "amountGte": {
+        "type": "number",
+        "description": "Minimum amount filter"
+       },
+       "amountLt": {
+        "type": "number",
+        "description": "Maximum (exclusive) amount filter"
+       },
+       "paymentType": {
+        "type": "string",
+        "description": "Payment type filter",
+        "example": "DEPOSIT"
+       },
+       "customerCountry": {
+        "type": "object",
+        "description": "Customer country filter",
+        "properties": {
+         "code": {
+          "type": "string",
+          "description": "Country code",
+          "example": "CY"
+         },
+         "op": {
+          "type": "string",
+          "description": "Operator",
+          "example": "IN"
+         },
+         "groupId": {
+          "type": "integer",
+          "description": "Country group ID"
+         }
+        }
+       },
+       "ipCountry": {
+        "type": "object",
+        "description": "IP country filter",
+        "properties": {
+         "code": {
+          "type": "string",
+          "description": "Country code",
+          "example": "CY"
+         },
+         "op": {
+          "type": "string",
+          "description": "Operator",
+          "example": "IN"
+         },
+         "groupId": {
+          "type": "integer",
+          "description": "Country group ID"
+         }
+        }
+       },
+       "currency": {
+        "type": "string",
+        "description": "Currency filter",
+        "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+        "example": "EUR"
+       },
+       "ipVersion": {
+        "type": "string",
+        "description": "IP version filter",
+        "example": "IPV4"
+       },
+       "emailBlackListGroupId": {
+        "type": "integer",
+        "description": "Email blacklist group ID"
+       },
+       "emailWhiteListGroupId": {
+        "type": "integer",
+        "description": "Email whitelist group ID"
+       },
+       "routingGroups": {
+        "type": "array",
+        "description": "Routing groups filter",
+        "items": {
+         "type": "string"
+        },
+        "example": [
+         "VIP"
+        ]
+       }
+      }
+     },
+     "cardFilters": {
+      "type": "object",
+      "description": "Card routing filters",
+      "properties": {
+       "cardBlackListGroupId": {
+        "type": "integer",
+        "description": "Card blacklist group ID"
+       },
+       "cardWhiteListGroupId": {
+        "type": "integer",
+        "description": "Card whitelist group ID"
+       },
+       "binCountry": {
+        "type": "object",
+        "description": "BIN country filter",
+        "properties": {
+         "code": {
+          "type": "string",
+          "description": "Country code",
+          "example": "CY"
+         },
+         "groupOp": {
+          "type": "string",
+          "description": "Group operator",
+          "example": "IN"
+         },
+         "groupId": {
+          "type": "integer",
+          "description": "Country group ID"
+         }
+        }
+       },
+       "cardBin": {
+        "type": "object",
+        "description": "Card BIN filter",
+        "properties": {
+         "range": {
+          "type": "integer",
+          "description": "BIN range value"
+         },
+         "groupOp": {
+          "type": "string",
+          "description": "Group operator",
+          "example": "IN"
+         },
+         "groupId": {
+          "type": "integer",
+          "description": "BIN group ID"
+         }
+        }
+       },
+       "binBrands": {
+        "type": "array",
+        "description": "Allowed card brands",
+        "items": {
+         "type": "string"
+        },
+        "example": [
+         "VISA",
+         "MASTERCARD"
+        ]
+       }
+      }
+     },
+     "limits": {
+      "type": "array",
+      "description": "Connector limits",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "integer",
+         "description": "Limit ID"
+        },
+        "limitCode": {
+         "type": "string",
+         "description": "Limit code"
+        },
+        "timeUnit": {
+         "type": "string",
+         "description": "Time unit for the limit period",
+         "example": "DAY"
+        },
+        "timePeriod": {
+         "type": "integer",
+         "description": "Number of time units in the limit period"
+        },
+        "limitValue": {
+         "type": "integer",
+         "description": "Maximum allowed value"
+        },
+        "routingGroup": {
+         "type": "string",
+         "description": "Routing group this limit applies to"
+        }
+       }
+      }
+     },
+     "trustedRoutingCriteria": {
+      "type": "object",
+      "description": "Criteria for trusted routing",
+      "properties": {
+       "customerKycStatus": {
+        "type": "string",
+        "description": "Required customer KYC status"
+       },
+       "cardKycStatus": {
+        "type": "string",
+        "description": "Required card KYC status"
+       },
+       "daysSinceFirstDeposit": {
+        "type": "integer",
+        "description": "Minimum days since customer's first deposit"
+       },
+       "cardHoursSinceFirstDeposit": {
+        "type": "integer",
+        "description": "Minimum hours since card's first deposit"
+       },
+       "numberOfDpsForCard": {
+        "type": "integer",
+        "description": "Minimum number of deposits for the card"
+       },
+       "statisticsForThisShop": {
+        "$ref": "#/components/schemas/ConnectorStatistics"
+       },
+       "statisticsForAllLinkedShops": {
+        "$ref": "#/components/schemas/ConnectorStatistics"
+       },
+       "statisticsForAtLeastOneLinkedShop": {
+        "$ref": "#/components/schemas/ConnectorStatistics"
+       }
+      }
+     }
+    }
+   },
+   "ConnectorStatistics": {
+    "type": "object",
+    "description": "Trusted routing statistics criteria",
+    "properties": {
+     "depositsAmount": {
+      "type": "number",
+      "description": "Minimum required deposits amount"
+     },
+     "depositsCount": {
+      "type": "object",
+      "description": "Required deposits count range",
+      "properties": {
+       "min": {
+        "type": "integer",
+        "description": "Minimum count"
+       },
+       "max": {
+        "type": "integer",
+        "description": "Maximum count"
+       }
+      }
+     },
+     "depositsCountForCard": {
+      "type": "object",
+      "description": "Required deposits count range for the card",
+      "properties": {
+       "min": {
+        "type": "integer",
+        "description": "Minimum count"
+       },
+       "max": {
+        "type": "integer",
+        "description": "Maximum count"
+       }
+      }
+     },
+     "withdrawalsAmount": {
+      "type": "number",
+      "description": "Minimum required withdrawals amount"
+     },
+     "withdrawalsCount": {
+      "type": "integer",
+      "description": "Minimum required withdrawals count"
+     }
+    }
+   },
+   "AntiFraudProfile": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Anti-Fraud Profile Id",
+      "example": 100
+     },
+     "name": {
+      "type": "string",
+      "description": "Profile name",
+      "example": "Default Profile"
+     },
+     "timeZoneToCheckLimits": {
+      "type": "string",
+      "description": "Time zone used when checking limits",
+      "example": "Europe/Nicosia"
+     },
+     "paymentDataVerification": {
+      "type": "array",
+      "description": "Payment data verification rules",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "integer",
+         "description": "Rule ID"
+        },
+        "ruleCode": {
+         "type": "string",
+         "description": "Verification rule code"
+        },
+        "countryOp": {
+         "type": "string",
+         "description": "Country filter operator"
+        },
+        "countryCode": {
+         "type": "string",
+         "description": "Country code filter value",
+         "example": "CY"
+        },
+        "countryGroupId": {
+         "type": "integer",
+         "description": "Country group ID filter"
+        },
+        "currency": {
+         "type": "string",
+         "description": "Currency filter value",
+         "example": "EUR"
+        },
+        "currencyOp": {
+         "type": "string",
+         "description": "Currency filter operator"
+        },
+        "currencyGroupId": {
+         "type": "integer",
+         "description": "Currency group ID filter"
+        },
+        "amountOp": {
+         "type": "string",
+         "description": "Amount comparison operator"
+        },
+        "amountGte": {
+         "type": "number",
+         "description": "Minimum amount filter"
+        },
+        "amountLt": {
+         "type": "number",
+         "description": "Maximum (exclusive) amount filter"
+        },
+        "currencies": {
+         "type": "string",
+         "description": "Comma-separated list of currencies"
+        },
+        "period": {
+         "type": "integer",
+         "description": "Period in days"
+        },
+        "parameters": {
+         "type": "string",
+         "description": "Additional rule parameters"
+        },
+        "routingGroup": {
+         "type": "string",
+         "description": "Routing group this rule applies to"
+        }
+       }
+      }
+     },
+     "shopLimits": {
+      "type": "array",
+      "description": "Shop-level limits",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "integer",
+         "description": "Limit ID"
+        },
+        "limitCode": {
+         "type": "string",
+         "description": "Limit code"
+        },
+        "timeUnit": {
+         "type": "string",
+         "description": "Time unit for the limit period",
+         "example": "DAY"
+        },
+        "timePeriod": {
+         "type": "integer",
+         "description": "Number of time units in the limit period"
+        },
+        "currency": {
+         "type": "string",
+         "description": "Currency for the limit",
+         "example": "EUR"
+        },
+        "limitValue": {
+         "type": "number",
+         "description": "Maximum allowed value"
+        }
+       }
+      }
+     },
+     "offlineChecks": {
+      "type": "array",
+      "description": "Offline check rules",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "integer",
+         "description": "Check ID"
+        },
+        "warnCode": {
+         "type": "string",
+         "description": "Warning code"
+        },
+        "timeUnit": {
+         "type": "string",
+         "description": "Time unit for the check period",
+         "example": "DAY"
+        },
+        "timePeriod": {
+         "type": "integer",
+         "description": "Number of time units in the check period"
+        },
+        "countryOp": {
+         "type": "string",
+         "description": "Country filter operator"
+        },
+        "countryCode": {
+         "type": "string",
+         "description": "Country code filter",
+         "example": "CY"
+        },
+        "countryGroupId": {
+         "type": "integer",
+         "description": "Country group ID filter"
+        },
+        "currency": {
+         "type": "string",
+         "description": "Currency filter",
+         "example": "EUR"
+        },
+        "limitValue": {
+         "type": "number",
+         "description": "Limit value"
+        },
+        "period": {
+         "type": "integer",
+         "description": "Period in days"
+        }
+       }
+      }
+     }
+    }
+   },
+   "CurrencyRate": {
+    "type": "object",
+    "properties": {
+     "baseCurrency": {
+      "type": "string",
+      "description": "Base currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "EUR"
+     },
+     "quoteCurrency": {
+      "type": "string",
+      "description": "Quote currency",
+      "format": "ISO 4217 code for FIAT currencies or cryptocurrency symbol",
+      "example": "USD"
+     },
+     "rate": {
+      "type": "number",
+      "description": "Exchange rate (1 unit of base currency in quote currency)",
+      "example": 1.1
+     },
+     "lastUpdate": {
+      "type": "string",
+      "format": "ISO 8601 (YYYY-MM-DD'T'HH24:MI:SS)",
+      "description": "Date and time when the rate was last updated, in UTC time zone",
+      "example": "2025-11-17T12:12:12"
+     },
+     "userId": {
+      "type": "integer",
+      "description": "ID of the user who last updated the rate"
+     },
+     "jobTerminalId": {
+      "type": "integer",
+      "description": "ID of the terminal job that updated the rate"
+     }
+    }
+   },
+   "BankCode": {
+    "type": "object",
+    "properties": {
+     "countryCode": {
+      "type": "string",
+      "description": "2-character ISO 3166-1 country code",
+      "example": "NG"
+     },
+     "bankCode": {
+      "type": "string",
+      "description": "Bank code",
+      "example": "000001"
+     },
+     "bankName": {
+      "type": "string",
+      "description": "Bank name",
+      "example": "Access Bank"
+     }
+    }
+   },
+   "BankCodeMapping": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Mapping ID",
+      "example": 42
+     },
+     "countryCode": {
+      "type": "string",
+      "description": "2-character ISO 3166-1 country code",
+      "example": "NG"
+     },
+     "bankCode": {
+      "type": "string",
+      "description": "System bank code",
+      "example": "000001"
+     },
+     "apiCode": {
+      "type": "string",
+      "description": "Provider API code",
+      "example": "FLUTTERWAVE"
+     },
+     "apiBankCode": {
+      "type": "string",
+      "description": "Bank code used by the provider API",
+      "example": "ACCESS"
+     }
+    }
+   },
+   "ErrorCodeGroup": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "integer",
+      "description": "Error Code Group Id",
+      "example": 10
+     },
+     "name": {
+      "type": "string",
+      "description": "Error Code Group Name",
+      "example": "My Error Code Group"
+     },
+     "merchantId": {
+      "type": "integer",
+      "description": "Merchant Id",
+      "example": 192
+     },
+     "merchantName": {
+      "type": "string",
+      "description": "Merchant Name",
+      "example": "Best Merchant"
+     },
+     "errorCodes": {
+      "type": "array",
+      "description": "Set of error codes in this group",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "4.01",
+       "3.00"
+      ]
+     }
+    }
+   },
+   "AddEmailsToGroupRequest": {
+    "type": "object",
+    "required": [
+     "emails"
+    ],
+    "properties": {
+     "emails": {
+      "type": "array",
+      "minItems": 1,
+      "description": "List of email addresses to add to the group",
+      "items": {
+       "type": "string",
+       "format": "email"
+      },
+      "example": [
+       "alerts@merchant.com",
+       "support@merchant.com"
+      ]
+     }
+    }
+   },
+   "AddCardsToGroupRequest": {
+    "type": "object",
+    "required": [
+     "cardNumbers"
+    ],
+    "properties": {
+     "cardNumbers": {
+      "type": "array",
+      "minItems": 1,
+      "description": "List of card numbers to add to the group. For masked card groups, each entry must start with at least 6 digits and end with 4 digits.",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "411111***1111",
+       "550000***5559"
+      ]
+     }
+    }
+   },
+   "OperationListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/PaymentOperation"
+      }
+     }
+    }
+   },
+   "PaymentListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Payment"
+      }
+     }
+    }
+   },
+   "TerminalBalanceResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "object",
+      "properties": {
+       "available": {
+        "type": "array",
+        "description": "Available balance",
+        "items": {
+         "$ref": "#/components/schemas/CurrencyAmount"
+        }
+       },
+       "reserved": {
+        "type": "array",
+        "description": "Reserved balance",
+        "items": {
+         "$ref": "#/components/schemas/CurrencyAmount"
+        }
+       }
+      }
+     }
+    }
+   },
+   "CounterpartiesListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Counterparty"
+      }
+     }
+    }
+   },
+   "ShopsListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Shop"
+      }
+     }
+    }
+   },
+   "TerminalsListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Terminal"
+      }
+     }
+    }
+   },
+   "BalanceListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Balance"
+      }
+     }
+    }
+   },
+   "AvailableWithdrawalBalancesListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AvailableWithdrawalBalances"
+      }
+     }
+    }
+   },
+   "BinListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/BinDetails"
+      }
+     }
+    }
+   },
+   "BinGroupListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/BinGroup"
+      }
+     }
+    }
+   },
+   "BinGroupItemsResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "description": "List of BINs in the group",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "411111",
+       "511111"
+      ]
+     }
+    }
+   },
+   "CustomerListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Customer"
+      }
+     }
+    }
+   },
+   "ShopGroupListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/ShopGroup"
+      }
+     }
+    }
+   },
+   "EmailGroupListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/EmailGroup"
+      }
+     }
+    }
+   },
+   "EmailGroupItemsResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "description": "List of email addresses in the group",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "alerts@merchant.com",
+       "support@merchant.com"
+      ]
+     }
+    }
+   },
+   "CardGroupListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CardGroup"
+      }
+     }
+    }
+   },
+   "CardGroupItemsResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "description": "List of masked card PANs in the group",
+      "items": {
+       "type": "string"
+      },
+      "example": [
+       "411111******1111",
+       "511111******2222"
+      ]
+     }
+    }
+   },
+   "CountryGroupListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CountryGroup"
+      }
+     }
+    }
+   },
+   "ConnectorListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/Connector"
+      }
+     }
+    }
+   },
+   "AntiFraudProfileListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/AntiFraudProfile"
+      }
+     }
+    }
+   },
+   "CurrencyRateListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/CurrencyRate"
+      }
+     }
+    }
+   },
+   "BankCodeListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/BankCode"
+      }
+     }
+    }
+   },
+   "BankCodeMappingListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/BankCodeMapping"
+      }
+     }
+    }
+   },
+   "ErrorCodeGroupListResponse": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:36:32.595+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "description": "HTTP status code",
+      "example": 200
+     },
+     "hasMore": {
+      "type": "boolean",
+      "description": "Indicates if there are more pages to return"
+     },
+     "result": {
+      "type": "array",
+      "items": {
+       "$ref": "#/components/schemas/ErrorCodeGroup"
+      }
+     }
+    }
+   },
+   "BadRequestError": {
+    "type": "object",
+    "properties": {
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:32:19.444+00:00"
+     },
+     "status": {
+      "type": "integer",
+      "example": 400
+     },
+     "error": {
+      "type": "string",
+      "example": "Bad Request"
+     },
+     "message": {
+      "type": "string"
+     },
+     "errors": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "codes": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "arguments": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "codes": {
+            "type": "array",
+            "items": {
+             "type": "string"
+            }
+           },
+           "defaultMessage": {
+            "type": "string"
+           }
+          }
+         }
+        },
+        "defaultMessage": {
+         "type": "string"
+        },
+        "objectName": {
+         "type": "string"
+        },
+        "field": {
+         "type": "string"
+        },
+        "bindingFailure": {
+         "type": "boolean"
+        }
+       }
+      }
+     },
+     "path": {
+      "type": "string",
+      "example": "/merchant-api/v1/payments"
+     }
+    }
+   },
+   "UnauthorizedError": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "integer",
+      "example": 401
+     },
+     "error": {
+      "type": "string",
+      "example": "Unauthorized"
+     },
+     "message": {
+      "type": "string",
+      "example": "Invalid token"
+     },
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:32:19.444+00:00"
+     },
+     "path": {
+      "type": "string",
+      "example": "/merchant-api/v1/payments"
+     }
+    }
+   },
+   "ForbiddenError": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "integer",
+      "example": 401
+     },
+     "error": {
+      "type": "string",
+      "example": "Forbidden"
+     },
+     "message": {
+      "type": "string",
+      "example": "403 FORBIDDEN"
+     },
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:32:19.444+00:00"
+     },
+     "path": {
+      "type": "string",
+      "example": "/merchant-api/v1/payments"
+     }
+    }
+   },
+   "NotFoundError": {
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "integer",
+      "example": 404
+     },
+     "error": {
+      "type": "string",
+      "example": "Not Found"
+     },
+     "message": {
+      "type": "string",
+      "example": "Payment not found"
+     },
+     "timestamp": {
+      "type": "string",
+      "format": "ISO 8601",
+      "example": "2025-10-07T13:32:19.444+00:00"
+     },
+     "path": {
+      "type": "string",
+      "example": "/merchant-api/v1/payments"
+     }
+    }
+   }
+  },
+  "responses": {
+   "BadRequest": {
+    "description": "Bad request",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/BadRequestError"
+      }
+     }
+    }
+   },
+   "Unauthorized": {
+    "description": "Unauthorized",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/UnauthorizedError"
+      }
+     }
+    }
+   },
+   "Forbidden": {
+    "description": "Forbidden",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/ForbiddenError"
+      }
+     }
+    }
+   },
+   "NotFound": {
+    "description": "Not Found",
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/NotFoundError"
+      }
+     }
+    }
+   }
+  },
+  "securitySchemes": {
+   "BasicAuth": {
+    "type": "http",
+    "description": "Use your merchant dashboard credentials (email and password) as username and password for Basic Authorization.",
+    "scheme": "basic"
+   }
+  }
+ },
+ "security": [
+  {
+   "BasicAuth": []
+  }
+ ],
+ "tags": [
+  {
+   "name": "Payments",
+   "description": "Payments API"
+  },
+  {
+   "name": "Operations",
+   "description": "Payment operations API"
+  },
+  {
+   "name": "Counterparties",
+   "description": "Counterparties API"
+  },
+  {
+   "name": "Shops",
+   "description": "Shops API"
+  },
+  {
+   "name": "Terminals",
+   "description": "Terminals API"
+  },
+  {
+   "name": "Balances",
+   "description": "Balances API"
+  },
+  {
+   "name": "BINs",
+   "description": "BINs API"
+  },
+  {
+   "name": "Customers",
+   "description": "Customers API"
+  },
+  {
+   "name": "Emails",
+   "description": "Email Groups API"
+  },
+  {
+   "name": "Cards",
+   "description": "Card Groups API"
+  },
+  {
+   "name": "Countries",
+   "description": "Country Groups API"
+  },
+  {
+   "name": "Connectors",
+   "description": "Connectors API"
+  },
+  {
+   "name": "Anti-Fraud",
+   "description": "Anti-Fraud Profiles API"
+  },
+  {
+   "name": "Currency Rates",
+   "description": "Currency Rates API"
+  },
+  {
+   "name": "Bank Codes",
+   "description": "Bank Codes API"
+  },
+  {
+   "name": "Error Code Groups",
+   "description": "Error Code Groups API"
+  }
+ ]
+}

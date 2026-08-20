@@ -1,0 +1,8 @@
+{
+  "paymentType": "REFUND",
+  "parentPaymentId": "91d27876e87f4b22b3ecd53924bf973d",
+  "referenceId": "refund-order-1001",
+  "amount": 10.01,
+  "currency": "GBP",
+  "description": "Refund for order #1001"
+}

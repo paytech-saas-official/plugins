@@ -1,0 +1,20 @@
+{
+  "paymentType": "DEPOSIT",
+  "referenceId": "order-1001",
+  "amount": 10.01,
+  "currency": "GBP",
+  "description": "Order #1001",
+  "customer": {
+    "referenceId": "customer-42",
+    "email": "jw@mail.com",
+    "phone": "44 02072243688"
+  },
+  "billingAddress": {
+    "countryCode": "GB",
+    "city": "London",
+    "addressLine1": "221b Baker St, Marylebone",
+    "postalCode": "NW1 6XE"
+  },
+  "returnUrl": "https://merchant.example.com/checkout/return?order=1001",
+  "webhookUrl": "https://merchant.example.com/webhooks/psp"
+}
