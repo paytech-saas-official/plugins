@@ -1,7 +1,8 @@
 {
   "name": "paytech",
   "owner": {
-    "name": "pay.tech"
+    "name": "pay.tech",
+    "url": "https://paytech.api-docs.info/"
   },
   "description": "Payment-integration plugins published by pay.tech.",
   "plugins": [
