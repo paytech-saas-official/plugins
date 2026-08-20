@@ -11,7 +11,7 @@ a concrete URL or the name of an environment variable.
 | Key | Value |
 |-----|-------|
 | PSP name | pay.tech |
-| Skill instance version | 1.9.0 |
+| Skill instance version | 1.9.1 |
 | Supported WL API version | 1.0.341 (OpenAPI 3.1.1, bundled in `openapi/`) |
 
 ## Endpoints
@@ -42,6 +42,20 @@ there, check the mirror before concluding the feature does not exist.
 
 Sandbox and production keys are **different**. Keys are issued per shop in the
 merchant back office / by PSP support.
+
+## Support, legal and distribution
+
+These feed the generated public-facing documents (LICENSE, SECURITY.md, PRIVACY.md,
+TERMS.md, the plugin's README). A value still written as `<...>` is treated as
+unresolved: the build then refuses to call itself publishable, so a placeholder can
+no longer reach a merchant unnoticed.
+
+| Key | Value |
+|-----|-------|
+| Copyright holder (legal entity) | `Paytech Ltd` |
+| Plugin marketplace repository | `paytech-saas-official/plugins` — where merchants add the marketplace from |
+| Integration support | `https://github.com/paytech-saas-official/plugins/issues` — questions about the API and the integration |
+| Security contact | `https://github.com/paytech-saas-official/plugins/security/advisories/new` — vulnerability reports about this skill or the API |
 
 ## Supported payment methods
 

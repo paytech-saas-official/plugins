@@ -1,17 +1,41 @@
 {
   "name": "psp-payments",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Integrate a merchant application with the PSP payment API (deposits, withdrawals, refunds, captures/voids, card tokens, recurring/subscriptions, hosted fields, Apple Pay / Google Pay), implement webhook handling and safe payment-state to order-state mapping, and verify the flow against the PSP sandbox.",
   "skills": "./skills/",
   "author": {
     "name": "pay.tech"
   },
+  "license": "MIT",
+  "keywords": [
+    "payments",
+    "psp",
+    "checkout",
+    "refunds",
+    "webhooks",
+    "recurring",
+    "hosted-fields",
+    "integration"
+  ],
   "interface": {
     "displayName": "pay.tech payments",
     "shortDescription": "Integrate a merchant application with the pay.tech payment API",
     "longDescription": "Integrate a merchant application with the PSP payment API (deposits, withdrawals, refunds, captures/voids, card tokens, recurring/subscriptions, hosted fields, Apple Pay / Google Pay), implement webhook handling and safe payment-state to order-state mapping, and verify the flow against the PSP sandbox.",
     "developerName": "pay.tech",
-    "category": "Productivity"
+    "category": "Finance",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Integrate card payments via pay.tech: DEPOSIT and REFUND, BASIC_CARD, hosted payment page.",
+      "Add refunds to our existing pay.tech deposit flow.",
+      "Review our pay.tech integration for missed webhooks and unsafe order-state mapping."
+    ],
+    "websiteURL": "https://paytech.api-docs.info/",
+    "privacyPolicyURL": "https://github.com/paytech-saas-official/plugins/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/paytech-saas-official/plugins/blob/main/TERMS.md"
   },
+  "homepage": "https://paytech.api-docs.info/",
   "repository": "https://github.com/paytech-saas-official/plugins"
 }
