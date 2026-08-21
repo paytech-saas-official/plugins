@@ -1,6 +1,6 @@
 {
   "name": "psp-payments",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "Integrate a merchant application with the PSP payment API (deposits, withdrawals, refunds, captures/voids, card tokens, recurring/subscriptions, hosted fields, Apple Pay / Google Pay), implement webhook handling and safe payment-state to order-state mapping, and verify the flow against the PSP sandbox.",
   "skills": "./skills/",
   "author": {

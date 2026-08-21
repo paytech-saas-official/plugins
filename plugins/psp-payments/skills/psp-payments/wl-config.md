@@ -11,7 +11,7 @@ a concrete URL or the name of an environment variable.
 | Key | Value |
 |-----|-------|
 | PSP name | pay.tech |
-| Skill instance version | 1.9.1 |
+| Skill instance version | 1.9.2 |
 | Supported WL API version | 1.0.341 (OpenAPI 3.1.1, bundled in `openapi/`) |
 
 ## Endpoints
@@ -52,7 +52,7 @@ no longer reach a merchant unnoticed.
 
 | Key | Value |
 |-----|-------|
-| Copyright holder (legal entity) | `Paytech Ltd` |
+| Copyright holder (legal entity) | `paytech ltd` |
 | Plugin marketplace repository | `paytech-saas-official/plugins` — where merchants add the marketplace from |
 | Integration support | `https://github.com/paytech-saas-official/plugins/issues` — questions about the API and the integration |
 | Security contact | `https://github.com/paytech-saas-official/plugins/security/advisories/new` — vulnerability reports about this skill or the API |

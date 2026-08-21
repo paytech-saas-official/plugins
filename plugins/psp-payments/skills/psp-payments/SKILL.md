@@ -10,7 +10,7 @@ description: >
   checkout redirect, recurringToken, Hosted Fields, or reviewing an existing
   PSP integration.
 metadata:
-  version: 1.9.1
+  version: 1.9.2
   wl-api-version: "1.0.341"
   spec: openapi/gateway-api.json, openapi/merchant-api.json (OpenAPI 3.1.1)
   wl-config: wl-config.md
