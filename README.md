@@ -16,7 +16,7 @@ Claude Code:
 
 ```
 /plugin marketplace add paytech-saas-official/plugins
-/plugin install psp-payments@paytech
+/plugin install paytech@paytech
 /reload-plugins
 ```
 
@@ -24,7 +24,7 @@ Codex:
 
 ```
 codex plugin marketplace add paytech-saas-official/plugins
-codex plugin add psp-payments@paytech
+codex plugin add paytech@paytech
 ```
 
 Credentials, the first task to give the agent, and how updates work are in the
