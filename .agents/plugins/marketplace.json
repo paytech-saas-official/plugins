@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "psp-payments",
+      "name": "paytech",
       "source": {
         "source": "local",
         "path": "./plugins/psp-payments"
