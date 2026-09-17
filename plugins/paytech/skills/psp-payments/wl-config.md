@@ -11,7 +11,7 @@ a concrete URL or the name of an environment variable.
 | Key | Value |
 |-----|-------|
 | PSP name | pay.tech |
-| Skill instance version | 1.9.2 |
+| Skill instance version | 1.10.0 |
 | Supported WL API version | 1.0.341 (OpenAPI 3.1.1, bundled in `openapi/`) |
 
 ## Endpoints
