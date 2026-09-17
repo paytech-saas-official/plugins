@@ -35,7 +35,7 @@ Claude Code:
 
 ```
 /plugin marketplace add paytech-saas-official/plugins
-/plugin install psp-payments@paytech
+/plugin install paytech@paytech
 /reload-plugins
 ```
 
@@ -43,7 +43,7 @@ Codex:
 
 ```
 codex plugin marketplace add paytech-saas-official/plugins
-codex plugin add psp-payments@paytech
+codex plugin add paytech@paytech
 ```
 
 **Or copy the folder**, if you would rather pin one version by hand. Copy
@@ -52,10 +52,11 @@ codex plugin add psp-payments@paytech
 - **Claude Code:** `.claude/skills/psp-payments/`
 - **OpenAI Codex:** `.agents/skills/psp-payments/`
 
-Verify discovery before relying on it: in Claude Code run `/skills` — it lists
-`psp-payments` for a copied folder and `psp-payments:psp-payments` for the plugin (plugin
-skills are namespaced by the plugin's name). In Codex, ask it to list its available
-skills.
+The plugin is called `paytech`; the skill inside it is `psp-payments`,
+which is also the folder name if you copy it by hand. Verify discovery before
+relying on it: in Claude Code run `/skills` — it lists `psp-payments` for a copied
+folder and `paytech:psp-payments` for the plugin (plugin skills are namespaced by the
+plugin's name). In Codex, ask it to list its available skills.
 
 You do not need to tell the agent to read the skill: it activates on a task that
 mentions pay.tech, payments, refunds, payouts or payment webhooks.
@@ -71,7 +72,7 @@ it does not update a plugin you did not ask it to. Turn it on once per machine:
 
 Claude Code then refreshes the marketplace in the background shortly after a
 session starts, and the new version loads on the next launch. To update on demand
-instead: `/plugin update psp-payments@paytech`. In Codex, refresh
+instead: `/plugin update paytech@paytech`. In Codex, refresh
 the catalog with `codex plugin marketplace upgrade paytech`.
 
 For a whole team, declare the marketplace in the project's

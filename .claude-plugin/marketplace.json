@@ -7,10 +7,10 @@
   "description": "Payment-integration plugins published by pay.tech.",
   "plugins": [
     {
-      "name": "psp-payments",
-      "source": "./plugins/psp-payments",
+      "name": "paytech",
+      "source": "./plugins/paytech",
       "description": "Integrate a merchant application with the PSP payment API (deposits, withdrawals, refunds, captures/voids, card tokens, recurring/subscriptions, hosted fields, Apple Pay / Google Pay), implement webhook handling and safe payment-state to order-state mapping, and verify the flow against the PSP sandbox.",
-      "version": "1.9.2"
+      "version": "1.10.0"
     }
   ]
 }

@@ -8,7 +8,7 @@ the payload is identical, each host reads its own manifest.
 
 | Plugin | What it does |
 |--------|--------------|
-| [`psp-payments`](plugins/psp-payments/README.md) | Integrate pay.tech payments into an existing application: deposits, withdrawals, refunds, card tokens, recurring, Hosted Fields, Apple Pay / Google Pay, webhooks — implemented in your codebase and verified against the sandbox. |
+| [`paytech`](plugins/paytech/README.md) | Integrate pay.tech payments into an existing application: deposits, withdrawals, refunds, card tokens, recurring, Hosted Fields, Apple Pay / Google Pay, webhooks — implemented in your codebase and verified against the sandbox. |
 
 ## Add the marketplace
 
@@ -16,7 +16,7 @@ Claude Code:
 
 ```
 /plugin marketplace add paytech-saas-official/plugins
-/plugin install psp-payments@paytech
+/plugin install paytech@paytech
 /reload-plugins
 ```
 
@@ -24,11 +24,11 @@ Codex:
 
 ```
 codex plugin marketplace add paytech-saas-official/plugins
-codex plugin add psp-payments@paytech
+codex plugin add paytech@paytech
 ```
 
 Credentials, the first task to give the agent, and how updates work are in the
-plugin's own page: [`plugins/psp-payments/README.md`](plugins/psp-payments/README.md).
+plugin's own page: [`plugins/paytech/README.md`](plugins/paytech/README.md).
 
 ## Legal and support
 
