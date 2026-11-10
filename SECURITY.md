@@ -10,14 +10,14 @@ the pay.tech API rather than this plugin, the same channel routes it onward.
 
 ## What this plugin is, in security terms
 
-It ships **instructions, API reference material and two helper scripts**. It runs
+It ships **instructions and API reference material** — Markdown, the JSON API
+specs, two example request bodies and an icon — and no executable code. It runs
 no server, opens no network listener and phones nothing home. Two consequences
 worth knowing:
 
-- The helper scripts (`scripts/psp_call.py`, `scripts/verify_webhook.py`) run on
-  your machine and talk only to the pay.tech API, using credentials you put in
-  your own environment. Read them before running them — they are short and
-  dependency-free on purpose.
+- The agent makes sandbox calls while it integrates: from your machine, to the
+  pay.tech API only, with credentials you put in your own environment. Every
+  call is visible in the session; nothing runs unattended.
 - An AI agent following these instructions writes code in your repository. Review
   its output the way you review a colleague's pull request, especially the parts
   that touch money, webhook signature verification and order state.
@@ -31,7 +31,7 @@ removing the message is not enough.
 ## Scope
 
 In scope: anything in this repository — the skill's instructions, the reference
-material, the helper scripts, the plugin manifests and the marketplace catalogs.
+material, the plugin manifests and the marketplace catalogs.
 
 Out of scope: your own integration code, and the pay.tech API itself (report
 those through the same channel; they are handled by a different team).
