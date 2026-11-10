@@ -106,9 +106,9 @@ export PSP_API_KEY=<your shop API key>
 export PSP_SIGNING_KEY=<your shop signing key>
 ```
 
-**B. A local env file:** copy the skill's `assets/env.example` to a new `.env` in
-your project root, put the real values there, add `.env` to `.gitignore`, and
-load it (your framework's dotenv, or `source .env`).
+**B. A local env file:** put the same three lines in a new `.env` in your project
+root (the skill carries them as a template, `assets/env.example.txt`), add `.env`
+to `.gitignore`, and load it (your framework's dotenv, or `source .env`).
 
 Never hardcode or commit credentials. Sandbox and production keys differ.
 

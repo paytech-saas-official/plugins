@@ -10,7 +10,7 @@ description: >
   checkout redirect, recurringToken, Hosted Fields, or reviewing an existing
   PSP integration.
 metadata:
-  version: 1.10.1
+  version: 1.11.0
   wl-api-version: "1.0.341"
   spec: openapi/gateway-api.json, openapi/merchant-api.json (OpenAPI 3.1.1)
   wl-config: wl-config.md
@@ -158,9 +158,9 @@ question** — never invent business requirements yourself.
   checkout's `postMessage` (it closes the iframe, nothing more, and its `state`
   vocabulary is not `PaymentState`). Only a verified webhook or a `GET` does.
 
-**Webhooks** (`references/webhooks.md`, template in
-`assets/webhook_handler.example.py`, working code in the language file for this
-project — see "Which files to read" above):
+**Webhooks** (`references/webhooks.md` — the rules, and a Flask template in its
+§7; working code in the language file for this project — see "Which files to
+read" above):
 - Verify the HMAC signature against the **raw body** before parsing. This is
   the single most common way the integration breaks: frameworks that parse JSON
   into an object and re-serialize it produce different bytes and the hash never
@@ -207,7 +207,7 @@ project that has no concurrency to defend against.
 
 **Credentials & security** (`references/authentication.md`):
 - Config only via env/secret store: `PSP_API_URL`, `PSP_API_KEY`,
-  `PSP_SIGNING_KEY` (template: `assets/env.example`). Never hardcode, commit,
+  `PSP_SIGNING_KEY` (template: `assets/env.example.txt`). Never hardcode, commit,
   or log them; never use production creds in tests.
 - All Gateway API calls are **backend-only**. Never ship the API key to the
   browser or call payment endpoints from frontend code.
@@ -238,22 +238,45 @@ library for its ecosystem (WireMock/MockWebServer, nock, respx).
 
 ### 6. Verify on sandbox
 
-Sandbox first, always (`references/testing-and-sandbox.md`: test cards,
-sandbox limits). Smoke-test with the bundled script:
+Sandbox first, always (`references/testing-and-sandbox.md`: test cards, sandbox
+limits, the smoke-test checklist). Before any money-moving call (`POST
+/payments`, capture, void) compare `$PSP_API_URL` with the sandbox value in
+`wl-config.md` and stop if it is not that host — never "try" a call against
+production. Send an explicit `User-Agent`: some WL hosts sit behind a WAF that
+answers a default client UA with `403` (Cloudflare error 1010).
 
 ```bash
 export PSP_API_URL=<sandbox url from wl-config.md> PSP_API_KEY=... PSP_SIGNING_KEY=...
-python3 scripts/psp_call.py demo-deposit             # create → expect redirectUrl
-python3 scripts/psp_call.py payment <id>             # poll state
-python3 scripts/psp_call.py find <referenceId>       # reconcile after a timeout
-python3 scripts/verify_webhook.py verify body.raw.json "<Signature header>"
+H=(-H "Authorization: Bearer $PSP_API_KEY" -H "User-Agent: psp-payments-skill")
+curl -sS -X POST "$PSP_API_URL/api/v1/payments" "${H[@]}" -H "Content-Type: application/json" \
+  -d '{"paymentType":"DEPOSIT","amount":10.01,"currency":"EUR","customer":{"referenceId":"skill-test-customer","email":"test@example.com"}}'
+                                                                 # create → expect redirectUrl
+curl -sS "$PSP_API_URL/api/v1/payments/<id>" "${H[@]}"           # poll state
+curl -sS "$PSP_API_URL/api/v1/payments?referenceId.eq=<referenceId>" "${H[@]}"   # reconcile after a timeout
 ```
 
-Capture one real sandbox webhook and run `verify_webhook.py verify` on its raw
-body: it reports whether the digest is **hex or base64**, which the API does not
-document. Pin the merchant's handler to whichever it is. Money-moving commands
-refuse to run against a non-sandbox-looking host unless you pass
-`--i-know-this-is-production`.
+Capture one real sandbox webhook and verify its `Signature` header against the
+**raw body bytes** in both encodings — the API does not document whether the
+digest is hex or base64; pin the merchant's handler to whichever matches:
+
+```bash
+python3 - body.raw.json "<Signature header>" <<'EOF'
+import base64, hashlib, hmac, os, sys
+digest = hmac.new(os.environ["PSP_SIGNING_KEY"].encode(),
+                  open(sys.argv[1], "rb").read(), hashlib.sha256).digest()
+given = sys.argv[2].strip()
+print("hex" if hmac.compare_digest(given.lower(), digest.hex())
+      else "base64" if hmac.compare_digest(given, base64.b64encode(digest).decode())
+      else "INVALID")
+EOF
+```
+
+A skill folder copied by hand also carries `scripts/psp_call.py` (the calls above
+as subcommands, with a built-in refusal to move money against a host that does
+not look like a sandbox) and `scripts/verify_webhook.py` (the check above): use
+them when they are present. The plugin ships without `scripts/` — Anthropic's
+directory accepts no executable files from this publisher — so there, use the
+commands above.
 
 ### 7. Hand over
 
@@ -312,14 +335,13 @@ references/
   testing-and-sandbox.md                  test cards, sandbox limits, smoke test
   errors-and-troubleshooting.md           error schema, code groups, decision tree
   merchant-api-and-reference-data.md      reporting API, bank codes / document types
-scripts/
+scripts/                                  copied folder only — the plugin ships none
   psp_call.py                             build/send sandbox calls (stdlib only)
   verify_webhook.py                       HMAC signature check (hex & base64)
 assets/
-  env.example                             credential template
+  env.example.txt                         credential template
   deposit_request.example.json            valid deposit body
   refund_request.example.json             valid refund body
-  webhook_handler.example.py              idempotent webhook handler template
 ```
 
 ## Versioning
